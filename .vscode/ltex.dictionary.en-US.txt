@@ -1,0 +1,8 @@
+Codespace
+ctrl
+requireAuthentication
+authRequired
+CommonJS
+npm
+destructure
+requireAuthentcation

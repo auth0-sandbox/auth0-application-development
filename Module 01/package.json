@@ -1,0 +1,20 @@
+{
+    "name": "acme-financial-management",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Auth0 Application Development Lab 1",
+    "license": "MIT",
+    "author": "Auth0",
+    "type": "module",
+    "scripts": {
+        "start": "node src/app"
+    },
+    "dependencies": {
+        "cookie-parser": "~1.4.6",
+        "express": "^4.18.1",
+        "express-session": "^1.17.3",
+        "http-errors": "~2.0.0",
+        "morgan": "~1.10.0",
+        "pug": "3.0.2"
+    }
+}

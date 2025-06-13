@@ -1,0 +1,7 @@
+{
+    "name": "Auth0 Application Development",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "code -r ./appdev-workspace.md"
+    }
+}
