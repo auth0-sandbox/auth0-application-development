@@ -105,7 +105,7 @@ You may use Git inside of VS Code, or *git* at the command line.
 Open the folder in VS Code,
 the instructions for using the workspace will present themselves.
 
-## Publishing Container Runtime and Local Workspace APIs
+### Publishing Container Runtime and Local Workspace APIs
 
 Warning: since you are running on your local computer or forwarding to your local computer
 a port from the container runtime, the URLs for the applications
