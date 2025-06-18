@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    .content
+        h1 Acme Expenses Back-end API
+        h2 Permissions
+        p This API is protected by Auth0. You can use the following permissions to access the API:
+        ul
+            li read:reports - View all expenses
+            li write:reports - Add, edit, or delete expenses
+        h2 Endpoints
+        ul 
+            li GET / - Displays this page
+            li GET /totals - Returns the total amount of expenses (requires read:totals permission)
+            li GET /reports - Returns all expenses (requires read:reports permission)
