@@ -31,10 +31,10 @@ VS Code will split the editor panel and show these instructions on the left, and
 *View &rarr; Terminal* or *Terminal &rarr; New Terminal* menu items.
 This panel also contains the *Problems, Output, Debug Console, Ports,* and *Comments* tabs.
 
-1. In the terminal window, change directory to the Module02 folder and run the *Node Package Manager* command to install the project dependencies ($ is the prompt).
+1. In the terminal window, change directory to the "Module 01" folder and run the *Node Package Manager* command to install the project dependencies ($ is the prompt).
 Do not worry about any warnings from *npm*:
     ```
-    $ cd Module02
+    $ cd "Module 01"
     $ npm install
     ```
 
