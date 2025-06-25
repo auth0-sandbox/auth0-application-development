@@ -7,12 +7,41 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Current File",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${file}",
             "cwd": "${fileDirname}/.."
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 2: Launch ACME FM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Solutions/Module 02/Acme/src/app.js",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme"
+        },
+       {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 2: Launch Backend API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Solutions/Module 02/API/src/server.js",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/API"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Module 2: Launch All",
+            "configurations": [
+                "Module 2: Launch ACME FM",
+                "Module 2: Launch Backend API"
+            ]
         }
     ]
 }

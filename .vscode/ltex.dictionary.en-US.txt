@@ -6,3 +6,7 @@ CommonJS
 npm
 destructure
 requireAuthentcation
+Quickstart
+RBAC
+userid
+accessToken
