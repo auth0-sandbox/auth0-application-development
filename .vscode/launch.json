@@ -13,6 +13,35 @@
             ],
             "program": "${file}",
             "cwd": "${fileDirname}/.."
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch ACME FM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Solutions/Module 02/Acme/src/app.js",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme"
+        },
+       {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Backend API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Solutions/Module 02/API/src/server.js",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/API"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch All",
+            "configurations": [
+                "Launch ACME FM",
+                "Launch Backend API"
+            ]
         }
     ]
 }

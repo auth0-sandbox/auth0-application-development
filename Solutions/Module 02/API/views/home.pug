@@ -2,7 +2,7 @@ extends layout
 
 block content
     .content
-        h1 Acme Expenses Back-end API
+        h1 Acme Expenses Backend API
         h2 Permissions
         p This API is protected by Auth0. You can use the following permissions to access the API:
         ul
@@ -11,5 +11,5 @@ block content
         h2 Endpoints
         ul 
             li GET / - Displays this page
-            li GET /totals - Returns the total amount of expenses (requires read:totals permission)
-            li GET /reports - Returns all expenses (requires read:reports permission)
+            li GET #[a(href="/auth0|684c417378bc64b837ab0c08/totals") /{userid}/totals] - Returns the total amount of expenses (requires read:totals permission)
+            li GET #[a(href="/auth0|684c417378bc64b837ab0c08/reports") /{userid}/reports] - Returns all expenses (requires read:reports permission)

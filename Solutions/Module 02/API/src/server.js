@@ -6,6 +6,9 @@ import dotenv from "dotenv"
 import express from 'express'
 import cors from 'cors'
 import { auth, requiredScopes } from 'express-oauth2-jwt-bearer'
+import logger from 'morgan'
+import path, { dirname, normalize } from 'path'
+import { fileURLToPath } from 'url'
 
 dotenv.config()
 
@@ -21,21 +24,37 @@ app.use((req, res, next) =>
     process.env.BASE_URL.includes(req.headers.host) ? next() : res.status(301).redirect(process.env.BASE_URL)
 )
 
+const __filename = fileURLToPath(import.meta.url)
+const __fileDirectory = dirname(__filename)
+const __dirname = normalize(path.join(__fileDirectory, ".."))
+app.set("views", path.join(__dirname, "views"))
+app.set("view engine", "pug")
+
+app.use(logger("combined"))
+
 app.use(cors({ origin: '*', methods: 'ET', preflightContinue: false, optionsSuccessStatus: 204 }))
+
+app.use(express.static(path.join(__dirname, "public")))
 
 app.get('/', (req, res) => {
     res.render("home", { })
 })
 
 // This middleware requires authorization for any middleware registered after it.
-app.use(auth())
+app.use(auth(
+    {
+        tokenSigningAlg: process.env.TOKEN_SIGNING_ALG || 'RS256'
+    }
+))
 
-app.get('/total', requiredScopes('read:totals'), (req, res) => {
+app.get('/:userid/totals', requiredScopes('read:totals'), (req, res) => {
+    // If there is a database with users, reference the variable userid to get the key
     const total = expenses.reduce((accum, expense) => accum + expense.value, 0)
     res.send({ total, count: expenses.length })
 })
 
-app.get('/reports', requiredScopes('read:reports'), (req, res) => {
+app.get('/:userid/reports', requiredScopes('read:reports'), (req, res) => {
+    // If there is a database with users, reference the variable userid to get the key
     res.send(expenses)
 })
 
@@ -44,7 +63,7 @@ app.use((err, req, res, next) => {
     res.json({ status: err.status, message: err.message })
 })
 
-app.listen(PORT, () => console.log(`Back-end API started at: ${APP_URL}`))
+app.listen(process.env.PORT, () => console.log(`Back-end API started at: ${process.env.BASE_URL}`))
 
 const expenses = [
     {

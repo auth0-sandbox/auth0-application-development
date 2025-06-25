@@ -54,33 +54,59 @@ app.use(
     session({
         secret: process.env.SECRET,
         resave: false,
-        saveUninitialized: true,
+//        saveUninitialized: true,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: false,
+            sameSite: 'lax',
+            secure: false
+        }
     })
 )
 
 // Add the Auth0 cilent
 app.use(
     auth({
-        // issuerBaseURL: process.env.ISSUER_BASE_URL,
+        issuerBaseURL: process.env.ISSUER_BASE_URL,
         baseURL: process.env.BASE_URL,
-        // clientID: process.env.CLIENT_ID,
+        clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        // secret: process.env.SECRET,
+        secret: process.env.SECRET,
         idpLogout: true,
-        authRequired: false
+        authRequired: false,
+        authorizationParams: {
+            response_type: 'code',
+            audience: process.env.BACKEND_AUDIENCE,
+            scope: 'openid profile email read:totals read:reports',
+        }
     })
 );
 
-// Set up the middleware for the route paths
+// If the user is authenticated then show the totals.
 app.get("/", async (req, res) => {
-    res.render("home", {
-        user: req.oidc && req.oidc.user,
-        total: expenses.reduce((accum, expense) => accum + expense.value, 0),
-        count: expenses.length,
-    })
+    let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
+    if (locals.user) {
+        try {
+            const apiUrl = `${process.env.BACKEND_URL}/${locals.user.sub}/totals`
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
+                }
+            }
+            const response = await fetch(apiUrl, config)
+            if (response.ok) {
+                locals = { ...locals, ...await response.json()}
+            }
+        }
+        catch (error) {
+        }
+    }
+    res.render("home", locals)
 })
 
-// Show user information from the authentication and authorization
+// Show user information from the authentication and authorization.
 app.get("/user", requiresAuth(),  async (req, res) => {
     res.render("user", {
         user: req.oidc && req.oidc.user,
@@ -91,16 +117,30 @@ app.get("/user", requiresAuth(),  async (req, res) => {
 })
 
 app.get("/expenses", requiresAuth(), async (req, res, next) => {
+    let expenses = []
+    try {
+        const apiUrl = `${process.env.BACKEND_URL}/${req.oidc.user.sub}/reports`
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
+            }
+        }
+        const response = await fetch(apiUrl, config)
+        expenses = await response.json()
+    }
+    catch (error) {
+        expenses = null
+    }
     res.render("expenses", {
         user: req.oidc && req.oidc.user,
         expenses,
     })
 })
 
-// Catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(404)))
 
-// Error handler
 app.use((err, req, res, next) => {
     res.locals.message = err.message
     res.locals.error = err
@@ -113,17 +153,3 @@ app.use((err, req, res, next) => {
 app.listen(process.env.PORT, () => {
     console.log(`WEB APP: ${process.env.BASE_URL}`)
 })
-
-// Expenses
-const expenses = [
-    {
-        date: new Date(),
-        description: "Pizza for a Coding Dojo session.",
-        value: 102,
-    },
-    {
-        date: new Date(),
-        description: "Coffee for a Coding Dojo session.",
-        value: 42,
-    },
-]
