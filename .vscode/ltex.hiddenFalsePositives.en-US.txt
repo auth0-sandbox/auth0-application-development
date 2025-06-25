@@ -9,3 +9,23 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QRetrieving the values from the .env file is handled by calling config from the dotenv module, so add this statement after deconstructing auth0Express:\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QExpress is similar to Flask or FastAPI in Python, Spring in Java, or Kestrel (part of ASP.NET Core) in .NET.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAlong the way the features of the Auth0 express-openid-connect SDK will be explored; the basic functionality of Auth0 Web Application SDKs is similar across all the platforms.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the AUDIENCE to the audience we defined for the API: HTTP​://acme-fm-backend-api, and save the .env file.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIn the server.js file add an import statement to get the SDK for verifying Auth0 access tokens: auth is the function that will build the express middleware from the configuration, and RequiredScopes is added to the endpoint middleware to set which scopes are necessary for that endpoint.\\E$"}
+{"rule":"LC_AFTER_PERIOD","sentence":"^\\QAfter that call to app.get register the Auth0 middleware to require the access token by inserting this code:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QFind the endpoint for the landing page, app.get('/'...\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QDo the same for the reports endpoint beginning with app.get('/:userid/reports'..., except the scope is read:reports:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QDo the same for the /reports endpoint beginning with app.get('/:userid/reports'..., except the scope is read:reports:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the configuration for the Auth0 client that is registered as the Express middleware: app.use(auth({...\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the configuration for the Auth0 client that is registered as the Express middleware: app.use(auth({...\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd the following audience line to the existing authorizationParams section to request a grant for an access token for the backend API:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd this line to the authorizationParams* section to include the required scopes; openid, profile, and email must be included to get the ID token properly:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd this line to the authorizationParams* section to include the required scopes; openid, profile, and email must be included to get the ID token properly:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QDo the same for the /reports endpoint beginning with app.get('/:userid/reports'..., except the scope is read:reports:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QNote the middleware provides an object named accessToken containing the expiration date, etc. that itself has the real access token as the access_token property.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QCheck the Expenses page to make sure the API is called to get the expenses.\\E$"}
+{"rule":"AFFORD_VB","sentence":"^\\QUnder RBAC Settings choose Enable RBAC and Add Permissions in the Access Token:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd the RequiredScopes call to register the middleware that rejects the request if the token does not have the read:totals scope:\\E$"}

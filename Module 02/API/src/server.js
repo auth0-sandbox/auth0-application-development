@@ -5,7 +5,6 @@
 import dotenv from "dotenv"
 import express from 'express'
 import cors from 'cors'
-import { auth, requiredScopes } from 'express-oauth2-jwt-bearer'
 import logger from 'morgan'
 import path, { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
@@ -40,22 +39,14 @@ app.get('/', (req, res) => {
     res.render("home", { })
 })
 
-// This middleware requires authorization for any middleware registered after it.
-app.use(auth({
-    audience: process.env.AUDIENCE,
-    issuer: process.env.ISSUER,
-    jwksUri: process.env.JWKS_URI,
-    tokenSigningAlg: process.env.TOKEN_SIGNING_ALG || 'RS256'
-}))
-
-app.get('/:userid/totals', requiredScopes('read:totals'), (req, res) => {
+app.get('/:userid/totals', (req, res) => {
     // Our fake data does not depend on a particular user id, but if there was a database with users
     // we would reference the variable 'userid' to get the key to find the user records.
     const total = expenses.reduce((accum, expense) => accum + expense.value, 0)
     res.send({ total, count: expenses.length })
 })
 
-app.get('/:userid/reports', requiredScopes('read:reports'), (req, res) => {
+app.get('/:userid/reports', (req, res) => {
     res.send(expenses)
 })
 

@@ -8,3 +8,5 @@ destructure
 requireAuthentcation
 Quickstart
 RBAC
+userid
+accessToken
