@@ -73,11 +73,12 @@ app.use(
 
 // Set up the middleware for the route paths
 app.get("/", async (req, res) => {
-    res.render("home", {
-        user: req.oidc && req.oidc.user,
-        total: expenses.reduce((accum, expense) => accum + expense.value, 0),
-        count: expenses.length,
-    })
+    let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
+    if (locals.user) {
+        locals.total = expenses.reduce((accum, expense) => accum + expense.value, 0)
+        locals.count = expenses.length
+    }
+    res.render("home", locals)
 })
 
 // Show user information from the authentication and authorization
