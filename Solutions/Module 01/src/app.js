@@ -54,20 +54,28 @@ app.use(
     session({
         secret: process.env.SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: false,
+            sameSite: 'lax',
+            secure: false
+        }
     })
 )
 
 // Add the Auth0 cilent
 app.use(
     auth({
-        // issuerBaseURL: process.env.ISSUER_BASE_URL,
+        issuerBaseURL: process.env.ISSUER_BASE_URL,
         baseURL: process.env.BASE_URL,
-        // clientID: process.env.CLIENT_ID,
+        clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        // secret: process.env.SECRET,
+        secret: process.env.SECRET,
         idpLogout: true,
-        authRequired: false
+        authRequired: false,
+        authorizationParams: {
+            response_type: "code"
+        }
     })
 );
 

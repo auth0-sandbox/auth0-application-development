@@ -17,12 +17,22 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Module 1: Launch ACME FM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Module 01/Acme/src/app.js",
+            "cwd": "${workspaceRoot}/Module 01/Acme"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Module 2: Launch ACME FM",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceRoot}/Solutions/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme"
+            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
+            "cwd": "${workspaceRoot}/Module 02/Acme"
         },
        {
             "type": "node",
@@ -31,8 +41,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceRoot}/Solutions/Module 02/API/src/server.js",
-            "cwd": "${workspaceRoot}/Solutions/Module 02/API"
+            "program": "${workspaceRoot}/Module 02/API/src/server.js",
+            "cwd": "${workspaceRoot}/Module 02/API"
         }
     ],
     "compounds": [

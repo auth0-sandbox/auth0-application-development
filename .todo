@@ -1,0 +1,8 @@
+Lab 1
+    Integrating Authentication into the express application
+        Missing instruction to open the app; be clearer about where to put the import statement
+        Clarify what destructuring is, and add "const" in front of the variable declaration, and it should be "requiresAuth".
+        "Add code after session setup" is confusing
+        Add something about relaunching the app after you make a change
+        Remove comments from config, add session lax
+        Remove implicit and client-credentials grants from Auth0 tenant application
