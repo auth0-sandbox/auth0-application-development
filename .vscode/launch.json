@@ -33,8 +33,10 @@
             ],
             "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
             "cwd": "${workspaceRoot}/Module 02/Acme"
+            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
+            "cwd": "${workspaceRoot}/Module 02/Acme"
         },
-       {
+        {
             "type": "node",
             "request": "launch",
             "name": "Module 2: Launch Backend API",
@@ -43,6 +45,38 @@
             ],
             "program": "${workspaceRoot}/Module 02/API/src/server.js",
             "cwd": "${workspaceRoot}/Module 02/API"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 03/Acme",
+            "sourceMaps": true,
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "dev"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch Backend API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Module 03/API/src/server.js",
+            "cwd": "${workspaceRoot}/Module 03/API"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch BFF API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceRoot}/Module 03/API/src/server.js",
+            "cwd": "${workspaceRoot}/Module 03/API"
         }
     ],
     "compounds": [
@@ -51,6 +85,14 @@
             "configurations": [
                 "Module 2: Launch ACME FM",
                 "Module 2: Launch Backend API"
+            ]
+        },
+        {
+            "name": "Module 3: Launch All",
+            "configurations": [
+                "Module 3: Launch ACME FM",
+                "Module 3: Launch Backend API",
+                "Module 3: Launch BFF API"
             ]
         }
     ]
