@@ -21,7 +21,7 @@ const app = express()
 
 // Send back HTTP 301 redirect if the request is not to the app URL
 app.use((req, res, next) =>
-    process.env.BASE_URL.includes(req.headers.host) ? next() : res.status(301).redirect(process.env.BASE_URL)
+    process.env.BASE_URL.includes(req.headers.host) || process.env.BASE_URL.includes(req.headers['x-forwarded-host']) ? next() : res.status(301).redirect(process.env.BASE_URL)
 )
 
 // Assuming this file is in the src directory, find the project directory
@@ -46,7 +46,12 @@ app.use(
     session({
         secret: process.env.SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: false,
+            sameSite: 'lax',
+            secure: false
+        }
     })
 )
 
