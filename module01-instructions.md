@@ -31,12 +31,12 @@ VS Code will split the editor panel and show these instructions on the left, and
 *View &rarr; Terminal* or *Terminal &rarr; New Terminal* menu items.
 This panel also contains the *Problems, Output, Debug Console, Ports,* and *Comments* tabs.
 
-1. In the terminal window, change directory to the "Module 01" folder, the name is quoted because
-of the spaces.
-Run the *Node Package Manager* command to install the project dependencies ($ is the prompt).
+1. In the terminal window, change directory to the "Acme" folder in "Module 01".
+The name is quoted in the command because of the space.
+Run the *Node Package Manager* command *npm* to install the project dependencies ($ is the prompt).
 Do not worry about any warnings from *npm*:
     ```
-    $ cd "Module 01"
+    $ cd "Module 01/Acme"
     $ npm install
     ```
 
@@ -53,7 +53,9 @@ If it is already open, just go to that tab.
 1. Click the large blue button that says *+ Create Application*.
 
 1. Call the application *ACME Financial Services*, click on *Regular Web Applications*
-for the application type, and click the blue *Create* button.
+for the application type, and click the blue *Create* button:
+
+    <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
 
@@ -69,34 +71,45 @@ and click on the *Grants* tab:
 1. Clear the checkboxes except for *Authorization Code* and *Refresh Token*.
 At the bottom of the page click the *Save* button.
 
-1. Back VS Code lick on the tab for app.js (new files open in the same
-editor pane as the file with the focus).
+    <div style="text-align: center;"><img src="./.assets/images/auth0-app-settings.png" /></div>
+
+1. Scroll down to the end of the page and expand the *Advanced Settings* section:
+
+    <div style="text-align: center;"><img src="./.assets/images/auth0-app-set-grants.png" /></div>
+
+1. Clear all the checkboxes except for *Authorization Code* and *Refresh Token*.
+Any grants the application does not use should be cleared for security.
+Click the *Save* button.
+
+1. Back in the VS Code editor click on the tab opened earlier for the file *app.js*.
+New files open in the same editor pane as the file with the focus.
 
 1. In the Explorer panel (open it temporarily if you have to) click *Module 01/.env* file.
 This file has externalized configuration variables.
 Configuration should not be hardwired into the application, that would require
 modifications and rebuilding for each deployment.
-The application can read the configuration from this file.
+The application will read the configuration from this file.
 
 1. Set the ISSUER_BASE_URL property to *https://* plus the value of the application
 DOMAIN from the Auth0 tenant.
 It will look something like this, but with a different domain name:
     ```
-    ISSUER_BASE_URL=https://dev-lab-jmussman-20250506.us.auth0.com
+    ISSUER_BASE_URL="https://dev-lab-jmussman-20250506.us.auth0.com"
     ```
 
-1. Copy the values from the application configuration at Auth0 and set the
-corresponding properties in the .env file:
+1. Copy the values from the application configuration at Auth0 for the CLIENT_ID
+and the CLIENT_SECRET and set the corresponding properties in the .env file:
     ```
-    CLIENT_ID=
-    CLIENT_SECRET=
+    CLIENT_ID="..."
+    CLIENT_SECRET="..."
     ```
 
-1. Just for you information:
+1. Just for your information, the other two environment variables are used this way:
     ```
-    SECRET=a long, randomly-generated string stored in env
-    PORT=37500
+    SECRET="a long, randomly-generated string stored in env"
+    PORT="37500"
     ```
+
     SESSION_SECRET is used by the *express-session* package (express middleware) to
     encrypt session data that is stored as the session key in the user browser.
     It really does not matter what the value is, just that we externalize it so we can
@@ -108,7 +121,7 @@ corresponding properties in the .env file:
 1. Save the file.
 Note, we are not quite done yet because we need to configure the *callback* and
 *logout* URLs on the Auth0 side.
-But we probably do not have them yet!
+But, if you are running in a GitHub Codespace we do not know the URL and port number yet!
 
 ## Integrating Authentication into the Express Application
 
@@ -116,25 +129,21 @@ But we probably do not have them yet!
 Express is an embedded web server (the application serves itself)
 where a chain of middleware functions are used
 
-1. In the terminal window add the *Auth0 Express SDK epxress-oopenid-connect* package
-to the project with the following
-*npm* command:
+1. In the terminal window add the *dotenv* and *epxress-oopenid-connect* (the Auth0 Express SDK) packages
+to the project with the following *npm* command:
     ```bash
-    $ npm install express-openid-connect
+    $ npm install dotenv express-openid-connect
     ```
 
-1. Add the *dotenv* package to handle externalizing the application configuration:
-    ```bash
-    $ npm install dotenv
-    ```
+1. Go back to the *app.js* file (it is already open).
 
 1. CLick on the *app.js* tab in the editor window.
 NodeJS packages are downloaded and installed to the *node_modules* folder in the project.
 They must be referenced by the application code to use them.
-
-1. To reference the SDK module add the following import statement to the end of the list
-of imports at the top of the file:
+To reference the dotenv module and the Auth0 SDK add the following two import statements
+after the existing import statements in *app.js*:
     ```js
+    import dotenv from 'dotenv'
     import auth0Express from 'express-openid-connect'
     ```
 
@@ -154,11 +163,6 @@ Put it right after the imports:
     const { auth, requiresAuth } = auth0Express
     ```
 
-1. To reference the dotenv module add the following import statement with the others:
-    ```js
-    import dotenv from 'dotenv'
-    ```
-
 1. This application chooses to externalize the configuration values for the connection
 to Auth0 in the .env file.
 Retrieving the values from the .env file is handled by calling *config* from the *dotenv*
@@ -168,11 +172,11 @@ module, so add this statement after deconstructing auth0Express:
     ```
 
 1. The Auth0 client object will need the URL to the application.
-The code is already in the source.
+The following code is already in the *app.js* source file, this is just for your
+reference:
 It checks to see if the application is local or in a GitHub Codespace and builds the
 environment variable BASE_URL accordingly.
 It also allows a manual override in the .env file.
-Don't change anything in the code, this is just for your reference:
     ```js
     if (!process.env.BASE_URL) {
         process.env.BASE_URL = !process.env.CODESPACE_NAME
@@ -203,10 +207,10 @@ and session cookies are enabled and encrypted with the *SECRET* in the .env file
     )
     ```
 
-1. The Auth0 client object is a middleware function that must be registered with Express.
-The function is generated by calling the *auth* function from the *express-openid-connect* SDK.
-Locate the session middleware registration (the code above) and add
-this code after it to create it and register the client in one statement:
+1. The Auth0 client object is a middleware function that must be registered with express.
+The function is generated by calling the *auth* function from the *express-openid-connect* sdk.
+Locate the *app.use(session(...* we just showed you in the last step,
+and add this code following that to create it and register the client in one statement:
     ```js
     app.use(
         auth({
@@ -221,22 +225,24 @@ this code after it to create it and register the client in one statement:
                 response_type: "code"
             }
         })
-    );
+    )
     ```
 
-    NOTE: the configuration values for *issuerBaseURL, baseURL, clientID,* and *secret*
-    (the session cookie secret) will be read by default from the environment variables.
-    It is preferred to set them explicitly in the code so anyone reviewing it knows
-    exactly the source of all the configuration values.
+    Just FYI it turns out that the *auth* function will load *ISSUER_BASE_URL, BASE_URL, CLIENT_ID*, and *SECRET*
+    by default from the environment (process.env).
+    The only reason for putting them here is to be clear to anyone reading the code
+    what we expect to happen.
 
-    *clientSecret* is necessary for Authorization Code flow.
-    *idpLogout* defaults to false, but for customer-facing applications
-    we want users to log out of the Auth0 tenant at the same time they leave the application.
-    *authRequired* must be *false* to selectively protect endpoints below.
+    *clientSecret* is not automatically read but necessary for Authorization Code flow.
+    *idpLogout* defaults to false, but for customer-facing applications we want users to log out
+    of the Auth0 tenant at the same time the log out of our application; when the come back
+    they expect to log in again.
+    *authRequired* defaults to *true*, but that makes every application endpoint require authentication.
+    It is necessary to set *authRequired* to *false* to selectively protect endpoints below.
 
-    The default authorization flow is implicit, which is both dangerous and deprecated.
-    Setting *response_type* in *authorizationParams* selects the OAuth2 Authorization
-    Code grant.
+    The default flow is *implicit*, which is deprecated and insecure.
+    Adding the *response_type: "code"* to the *authorizationParams* configures the client to
+    request the *authorization code* grant.
 
 1. The remaining three *Express* middleware registrations are for the three endpoints
 */*, */user*, and */expenses*.
@@ -272,6 +278,12 @@ From this list select *Module 1: Launch ACME FM*.
 
 1. To the left of the run configurations click the run button at the top right.
 If there are any errors, fix them and try again.
+When Run/Debug launches the application, it displays a toolbar where the red square may be used
+to stop the application, and the "recycle" button will restart it.
+You will need to restart it if you make any changes to the code while it is running:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
+
 
 1. When the application launches in the *Debug Console* panel at the bottom
 of VS COde you will see the URL for the application printed out.
@@ -297,21 +309,20 @@ URL it does not recognize:
 
 1. In VS Code, in the *DEBUG CONSOLE* panel, copy the URL that you just used to launch the application.
 If you are working on the project locally, this will be http://localhost:37500.
-If you are in a GitHub Codespace the server will have a random name.
+If you are in a GitHub Codespace the server will have a random name like "cuddly-journey".
 
 1. In your Auth0 tenant find the application configuration and look at the *Settings* tab.
 Scroll down the page until you find the section for *Application URIs*.
-URLs are a subset of URIs. Find the *Allowed Logout URLs* and past the URL you
-copied in that field.
 
-    <div style="text-align: center;">
-    <img src="./.assets/images/auth0-app-logout-url.png" /></div>
+URLs are a subset of URIs, so find the *Allowed Logout URLs* and past the URL you just
+copied in that field:
+
+    <div style="text-align: center;"><img src="./.assets/images/auth0-app-logout-url.png" /></div>
 
 1. Just above that you will find the *Allowed Callback URLs*.
-Paste the copied URL there too, and then add */callback* to the end of it.
+Paste the copied URL there too, and then add */callback* to the end of it:
 
-    <div style="text-align: center;">
-    <img src="./.assets/images/auth0-app-callback-url.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/auth0-app-callback-url.png" /></div>
 
     Both of these URLs are correct if you are working on your local computer,
     the URL will be different if you are running in a GitHub Codespace.
@@ -348,7 +359,11 @@ details:
 <div style="text-align: center;">
 <img src="./.assets/images/application-user-page.png" /></div>
 
-![Stop](./.assets/images/stop.png)
+1. When you are finished, stop the application in VS Code:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
+
+<br>z![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
 When your instructor says you are ready to start the next Lab,

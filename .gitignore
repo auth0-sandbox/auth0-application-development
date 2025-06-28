@@ -1,5 +1,5 @@
-.DS_STORE
-.todo
 **/.archive/
 **/node_modules/
 **/package-lock.json
+**/.DS_STORE
+**/.todo
