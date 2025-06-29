@@ -23,7 +23,7 @@ The first icon in the toolbar is the *Explorer* icon
 click this to show and hide the *Explorer* panel.
 Ctrl/cmd+shift+E is the keyboard shortcut to open the Explorer panel.
 
-1. Expand the *Module 01/src* directory.
+1. Expand the *Module 01/Acme/src* directory.
 Right-click the *app.js* file and select *Open to the Side*.
 VS Code will split the editor panel and show these instructions on the left, and the app.js file on the right.
 
@@ -57,8 +57,6 @@ for the application type, and click the blue *Create* button:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
 
-    <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
-
 1. On the application configuration page click the *Settings* tab:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-settings.png" /></div>
@@ -71,20 +69,10 @@ and click on the *Grants* tab:
 1. Clear the checkboxes except for *Authorization Code* and *Refresh Token*.
 At the bottom of the page click the *Save* button.
 
-    <div style="text-align: center;"><img src="./.assets/images/auth0-app-settings.png" /></div>
-
-1. Scroll down to the end of the page and expand the *Advanced Settings* section:
-
-    <div style="text-align: center;"><img src="./.assets/images/auth0-app-set-grants.png" /></div>
-
-1. Clear all the checkboxes except for *Authorization Code* and *Refresh Token*.
-Any grants the application does not use should be cleared for security.
-Click the *Save* button.
-
 1. Back in the VS Code editor click on the tab opened earlier for the file *app.js*.
 New files open in the same editor pane as the file with the focus.
 
-1. In the Explorer panel (open it temporarily if you have to) click *Module 01/.env* file.
+1. In the Explorer panel (open it temporarily if you have to) click the *Module 01/Acme/.env* file to open it next to *app.js*.
 This file has externalized configuration variables.
 Configuration should not be hardwired into the application, that would require
 modifications and rebuilding for each deployment.
@@ -126,10 +114,14 @@ But, if you are running in a GitHub Codespace we do not know the URL and port nu
 ## Integrating Authentication into the Express Application
 
 1. This application is based on the *Express* framework.
-Express is an embedded web server (the application serves itself)
-where a chain of middleware functions are used
+Express is a JavaScript framework for web applications and services that
+self-hosts using an embedded web server and processes
+requests through a chain of middleware functions.
+Fundamentally this is the same architecture used by other modern frameworks:
+Java Spring Boot, .NET Core, Python Flask, Rack (Ruby), etc.
 
-1. In the terminal window add the *dotenv* and *epxress-oopenid-connect* (the Auth0 Express SDK) packages
+1. In the terminal window (still in the module Acme folder)
+add the *dotenv* and *epxress-oopenid-connect* (the Auth0 Express SDK) packages
 to the project with the following *npm* command:
     ```bash
     $ npm install dotenv express-openid-connect
@@ -137,7 +129,7 @@ to the project with the following *npm* command:
 
 1. Go back to the *app.js* file (it is already open).
 
-1. CLick on the *app.js* tab in the editor window.
+1. Click on the *app.js* tab in the editor window.
 NodeJS packages are downloaded and installed to the *node_modules* folder in the project.
 They must be referenced by the application code to use them.
 To reference the dotenv module and the Auth0 SDK add the following two import statements
@@ -152,13 +144,14 @@ does not use them (they are ignored).
 Many folks still use them as a hangover from C, C++, Java, or C# and you can use them if you like.
 This example is following accepted conventions and not including them.
 
-1. *express-openid-connect* is built as a *CommonJS* module so, we have to destructure it
-into the components that we need with this statement.
+1. *express-openid-connect* is built as a *CommonJS* module and will will destructure it
+into the components that will be used with the following statement.
 *Destructuring* is the JavaScript technique to assign the property values of an object into
 individual variables, in this case JavaScript copies the values of the *auth* and *requiresAuth*
 properties.
-The only reason for doing this is to access the functions *auth* and *requiresAuth* easily.
-Put it right after the imports:
+The only reason for doing this is to access the functions *auth* and *requiresAuth* without having
+to go through the original object.
+Put this right after the imports:
     ```js
     const { auth, requiresAuth } = auth0Express
     ```
@@ -240,15 +233,16 @@ and add this code following that to create it and register the client in one sta
     *authRequired* defaults to *true*, but that makes every application endpoint require authentication.
     It is necessary to set *authRequired* to *false* to selectively protect endpoints below.
 
-    The default flow is *implicit*, which is deprecated and insecure.
+    The default OAuth authorization flow is *implicit*, which is deprecated and insecure.
     Adding the *response_type: "code"* to the *authorizationParams* configures the client to
     request the *authorization code* grant.
 
 1. The remaining three *Express* middleware registrations are for the three endpoints
 */*, */user*, and */expenses*.
 / should be unprotected, but we need to add the *requiresAuth* middleware to
-the other two registrations so, authentication will be required.
-Change the registration for */user* to like this with *requireAuthentcation* as the
+the other two registrations so authentication will be required.
+Change the registration for */user* to look like this by
+adding *requireAuthentcation* as the
 second argument:
     ```js
     app.get("/user", requiresAuth(),  async (req, res) => {
@@ -259,14 +253,14 @@ second argument:
     app.get("/expenses", requiresAuth(), async (req, res, next) => {
     ```
 
-1. The remaining code in the file configures formatting for HTTP 404 errors; this must follow
-all other middleware because that's how it notices a bad request.
-The *Express* application be calling the *listen* method,
-the data for the /expenses page follows that; it is just a simple example.
+1. The remaining code in the file configures formatting for HTTP 404 errors.
+This must follow
+all other middleware because that is how it notices a bad request.
+The embedded web server is started by calling the *listen* method.
+The data for expenses is at the end of the file; this is just sample data
+for testing the application.
 
 ## Testing the Express Application
-
-1. Click the tab or anywhere in app.js file in the editor to make that the editor panel with the input focus.
 
 1. Open the *Run/Debug* panel from the toolbar 
 ![Run/Debug](./.assets/images/vscode-toolbar-rundebug.png)
@@ -277,44 +271,39 @@ with a list of *run configurations*.
 From this list select *Module 1: Launch ACME FM*.
 
 1. To the left of the run configurations click the run button at the top right.
-If there are any errors, fix them and try again.
-When Run/Debug launches the application, it displays a toolbar where the red square may be used
+If there are any errors, fix them and try to launch it again.
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-launch.png" /></div>
+
+1. When Run/Debug launches the application, it displays a toolbar where the red square may be used
 to stop the application, and the "recycle" button will restart it.
-You will need to restart it if you make any changes to the code while it is running:
+You will need to restart the application if you make any changes to the code while it is running:
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
 
 
-1. When the application launches in the *Debug Console* panel at the bottom
-of VS COde you will see the URL for the application printed out.
-You will also notice the Run/Debug Toolbar floating over VS Code.
-You can stop the application by clicking the red square.
-If you edit the program, you can relaunch it with your changes by clicking
-the restart button:
-
-    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
-
-1. In the *Debug Console* find the application URL.
-If you are using a GitHub Codespace this is already adjusted for your Codespace.
-Hold down the ctrl/cmd key and click the link to open the landing page.
+1. In the *Debug Console* the last line printed out (if the application runs) is a link to
+the application landing page.
+This link is clickable: hold down the ctrl/cmd key and it to open the landing page.
 
 1. Click the login button at the top right.
 The browser will be redirected to the Auth0 tenant authorization server, but
 it will display an error because the callback URL is not set.
-You can click the link on the page for the error details, it will show you the callback
+You can click the link on the page *See details for this error* and it will show you the callback
 URL it does not recognize:
 
     <div style="text-align: center;">
     <img src="./.assets/images/auth0-bad-callback-url.png" /></div>
 
-1. In VS Code, in the *DEBUG CONSOLE* panel, copy the URL that you just used to launch the application.
+1. In the *DEBUG CONSOLE* panel in VS Code, find and copy the URL
+that you just used to launch the application.
 If you are working on the project locally, this will be http://localhost:37500.
 If you are in a GitHub Codespace the server will have a random name like "cuddly-journey".
 
 1. In your Auth0 tenant find the application configuration and look at the *Settings* tab.
 Scroll down the page until you find the section for *Application URIs*.
 
-URLs are a subset of URIs, so find the *Allowed Logout URLs* and past the URL you just
+    URLs are a subset of URIs, so find the *Allowed Logout URLs* and past the URL you just
 copied in that field:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-logout-url.png" /></div>
@@ -324,14 +313,10 @@ Paste the copied URL there too, and then add */callback* to the end of it:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-callback-url.png" /></div>
 
-    Both of these URLs are correct if you are working on your local computer,
-    the URL will be different if you are running in a GitHub Codespace.
+    Both of these URLs are correct if you are working on your local computer.
+    Again, the URL will be different with a random name if you are running in a GitHub Codespace.
 
 1. Click *Save* and save the changes to the application configuration.
-
-1. Restart the application with the restart button in the Run/Debug toolbar:
-
-    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
 
 1. Back on the error page that Auth0 is displaying, click the back button to go back
 to the application landing page.
@@ -359,7 +344,8 @@ details:
 <div style="text-align: center;">
 <img src="./.assets/images/application-user-page.png" /></div>
 
-1. When you are finished, stop the application in VS Code:
+1. When you are finished exploring the application stop it using the Run/Debug
+toolbar in VS Code:
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
