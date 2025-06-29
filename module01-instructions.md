@@ -57,8 +57,6 @@ for the application type, and click the blue *Create* button:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
 
-    <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
-
 1. On the application configuration page click the *Settings* tab:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-settings.png" /></div>
@@ -116,10 +114,14 @@ But, if you are running in a GitHub Codespace we do not know the URL and port nu
 ## Integrating Authentication into the Express Application
 
 1. This application is based on the *Express* framework.
-Express is an embedded web server (the application serves itself)
-where a chain of middleware functions are used
+Express is a JavaScript framework for web applications and services that
+self-hosts using an embedded web server and processes
+requests through a chain of middleware functions.
+Fundamentally this is the same architecture used by other modern frameworks:
+Java Spring Boot, .NET Core, Python Flask, Rack (Ruby), etc.
 
-1. In the terminal window add the *dotenv* and *epxress-oopenid-connect* (the Auth0 Express SDK) packages
+1. In the terminal window (still in the module Acme folder)
+add the *dotenv* and *epxress-oopenid-connect* (the Auth0 Express SDK) packages
 to the project with the following *npm* command:
     ```bash
     $ npm install dotenv express-openid-connect
@@ -142,13 +144,14 @@ does not use them (they are ignored).
 Many folks still use them as a hangover from C, C++, Java, or C# and you can use them if you like.
 This example is following accepted conventions and not including them.
 
-1. *express-openid-connect* is built as a *CommonJS* module so, we have to destructure it
-into the components that we need with this statement.
+1. *express-openid-connect* is built as a *CommonJS* module and will will destructure it
+into the components that will be used with the following statement.
 *Destructuring* is the JavaScript technique to assign the property values of an object into
 individual variables, in this case JavaScript copies the values of the *auth* and *requiresAuth*
 properties.
-The only reason for doing this is to access the functions *auth* and *requiresAuth* easily.
-Put it right after the imports:
+The only reason for doing this is to access the functions *auth* and *requiresAuth* without having
+to go through the original object.
+Put this right after the imports:
     ```js
     const { auth, requiresAuth } = auth0Express
     ```
@@ -230,15 +233,16 @@ and add this code following that to create it and register the client in one sta
     *authRequired* defaults to *true*, but that makes every application endpoint require authentication.
     It is necessary to set *authRequired* to *false* to selectively protect endpoints below.
 
-    The default flow is *implicit*, which is deprecated and insecure.
+    The default OAuth authorization flow is *implicit*, which is deprecated and insecure.
     Adding the *response_type: "code"* to the *authorizationParams* configures the client to
     request the *authorization code* grant.
 
 1. The remaining three *Express* middleware registrations are for the three endpoints
 */*, */user*, and */expenses*.
 / should be unprotected, but we need to add the *requiresAuth* middleware to
-the other two registrations so, authentication will be required.
-Change the registration for */user* to like this with *requireAuthentcation* as the
+the other two registrations so authentication will be required.
+Change the registration for */user* to look like this by
+adding *requireAuthentcation* as the
 second argument:
     ```js
     app.get("/user", requiresAuth(),  async (req, res) => {
@@ -249,14 +253,14 @@ second argument:
     app.get("/expenses", requiresAuth(), async (req, res, next) => {
     ```
 
-1. The remaining code in the file configures formatting for HTTP 404 errors; this must follow
-all other middleware because that's how it notices a bad request.
-The *Express* application be calling the *listen* method,
-the data for the /expenses page follows that; it is just a simple example.
+1. The remaining code in the file configures formatting for HTTP 404 errors.
+This must follow
+all other middleware because that is how it notices a bad request.
+The embedded web server is started by calling the *listen* method.
+The data for expenses is at the end of the file; this is just sample data
+for testing the application.
 
 ## Testing the Express Application
-
-1. Click the tab or anywhere in app.js file in the editor to make that the editor panel with the input focus.
 
 1. Open the *Run/Debug* panel from the toolbar 
 ![Run/Debug](./.assets/images/vscode-toolbar-rundebug.png)
@@ -267,8 +271,11 @@ with a list of *run configurations*.
 From this list select *Module 1: Launch ACME FM*.
 
 1. To the left of the run configurations click the run button at the top right.
-If there are any errors, fix them and try again.
-When Run/Debug launches the application, it displays a toolbar where the red square may be used
+If there are any errors, fix them and try to launch it again.
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-launch.png" /></div>
+
+1. When Run/Debug launches the application, it displays a toolbar where the red square may be used
 to stop the application, and the "recycle" button will restart it.
 You will need to restart the application if you make any changes to the code while it is running:
 
