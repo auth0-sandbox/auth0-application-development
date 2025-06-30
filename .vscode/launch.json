@@ -33,8 +33,6 @@
             ],
             "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
             "cwd": "${workspaceRoot}/Module 02/Acme"
-            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 02/Acme"
         },
         {
             "type": "node",
