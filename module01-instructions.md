@@ -282,10 +282,7 @@ which monitors the application files for changes.
 Any changes will cause the application to reload automatically.
 You can always restart the application manually with the "recycle" button:
 
-
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
-
-
 
 1. In the *Debug Console* the last line printed out (if the application runs) is a link to
 the application landing page.
@@ -297,8 +294,7 @@ it will display an error because the callback URL is not set.
 You can click the link on the page *See details for this error* and it will show you the callback
 URL it does not recognize:
 
-    <div style="text-align: center;">
-    <img src="./.assets/images/auth0-bad-callback-url.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/auth0-bad-callback-url.png" /></div>
 
 1. Do not trust the URL that Auth0 display,
 the application could have sent the wrong information!
@@ -311,8 +307,7 @@ If you are in a GitHub Codespace the server will have a random name like "cuddly
 Scroll down the page until you find the section for *Application URIs*.
 
     URLs are a subset of URIs.
-    Find the *Allowed Logout URLs* and past the URL you just
-copied in that field:
+    Find the *Allowed Logout URLs* and past the URL you justcopied in that field:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-logout-url.png" /></div>
 
@@ -337,8 +332,7 @@ so click the link to *Sign up* and create a user for yourself.
 Do not use 'Continue with Google', we must create a local user.
 You can use any email address and password that you want, it does not have to be real.
 
-<div style="text-align: center;">
-<img src="./.assets/images/auth0-application-login.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/auth0-application-login.png" /></div>
 
 1. If you are working on the project locally, and only then,
 an idiosyncrasy of Auth0 is that applications
@@ -347,14 +341,12 @@ This is to protect users from malware running launching a *phishing application*
 developers running applications in a local sandbox just need to live with it.
 You will not see this if an HTTPS address to a GitHub Codespace is used.
 
-<div style="text-align: center;">
-<img src="./.assets/images/auth0-application-consent.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/auth0-application-consent.png" /></div>
 
 1. Once you land on the *Home* page, you can click the username to see the user
 details:
 
-<div style="text-align: center;">
-<img src="./.assets/images/application-user-page.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/application-user-page.png" /></div>
 
 1. When you are finished exploring the application stop it using the Run/Debug
 toolbar in VS Code:
@@ -366,8 +358,7 @@ Look for the trashcan in the terminal tab in the lower panel,
 there will be more than one if multiple
 terminals are open:
 
-    <div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
-
+    div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
 
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
