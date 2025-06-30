@@ -1,4 +1,4 @@
-// app.js - Auth0 Application Development Module 02 Lab
+// server.js - Auth0 Application Development Module 02 Lab
 // Backend API
 //
 

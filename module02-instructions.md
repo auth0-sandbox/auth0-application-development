@@ -14,7 +14,7 @@ The API needs to be protected so that only authorized users may access it.
 1. Secure the API with access tokens.
 1. Obtain and use access tokens in the application.
 
-## Define the Acme Backend API and Permissions
+## Part 1: Define the Acme Backend API and Permissions
 
 Juggling permissions is a three-way negotiation between the API, the identity provider, and
 the application.
@@ -30,7 +30,7 @@ The only actions the application is looking for right now are the *totals* and *
 * **read:totals**
 * **read:reports**
 
-## Configure the API in the Auth0 Tenant
+## Part 2: Configure the API in the Auth0 Tenant
 
 1. In the Auth0 tenant use select *Applications &rarr; APIs*.
 
@@ -47,13 +47,16 @@ click the *Create* button.
 
 1. The interface lands on the *Quickstart* tab for the new API.
 Click on the *Settings* tab; here you can change the name of the API as it appears in the dashboard, the token
-expiration, the profile and signing algorithms.
+expiration, and the profile and signing algorithms.
 The assigned ID and the Identifier (audience) cannot be changed.
-Under *RBAC Settings* choose *Enable RBAC* and *Add Permissions in the Access Token*:
+
+    <div style="text-align: center;"><img src="./.assets/images/auth0-api-settings.png" /></div>
+
+1. Scroll down to *RBAC Settings* enable *Enable RBAC* and *Add Permissions in the Access Token*.
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-api-rbac-settings.png" /></div>
 
-1. Under *Access Settings* enable *Allow Skipping User Consent* and *Allow Offline Access*:
+1. Below under *Access Settings* enable *Allow Skipping User Consent* and *Allow Offline Access*:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-api-access-settings.png" /></div>
 
@@ -65,12 +68,12 @@ and click the *+ Add* button:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-api-create-permission.png" /></div>
 
-1. Set the second permission to *read:reports* and *Read expense reports*, and
+1. Fill in a second permission as *read:reports* and a description of *Read expense reports*, and
 click the *+ Add* button.
 
 This completes the API integration.
 
-## Use Role-based Access Control (RBAC) to allow user access
+## Part 3: Use Role-based Access Control (RBAC) to allow user access
 
 Users may be assigned API permissions directly.
 Usually users work in groups, and often everyone in the group requires the same access.
@@ -108,11 +111,13 @@ It is possible to type and select multiple users in this field.
 
 1. Once the user or users have been selected, click the *Assign* button.
 
-## Add Access Token Support to the API
+## Part 4: Add Access Token Support to the API
 
-Access tokens must be requested by the application.
-Only one access token may be requested at a time, multiple requests may be necessary to make requests
-to multiple APIs.
+Access tokens for APIs must be requested by the application as part of the authorization request.
+
+1. In the VS Code Explorer panel find the API folder and right-click on *.env*.
+Choose the *Open to the Side* option.
+Notice that the *AUDIENCE*, *ISSUER* and *JWKS_URI* are not set.
 
 1. In the Auth0 tenant use the sidebar to navigate to *Applications &rarr; Applications* and
 choose the *ACME Financial Management* application.
@@ -121,31 +126,33 @@ choose the *ACME Financial Management* application.
 
 1. Locate the entry for *JSON Web Key Set* and copy the value.
 
-1. In VS Code in the *Explorer* panel open the path to *Module 02/API*.
-
-1. Click on the *.env* file to open it.
-Notice that the *AUDIENCE*, *ISSUER* and *JWKS_URI* are not set.
-Set the *JWKS_URI* to the value copied from the tenant.
+1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
 
 1. Set the *ISSUER* to the URL of your Auth0 tenant: *HTTPS&#x200B;://\<your domain>.\<your region>.auth0.com*.
-That happens to be the first part of the JWKS_URI value, up to the / in front of the path part of the URL.
+That happens to be the first part of the JWKS_URI value, up to the / in front of the path part of the URL, so you
+can get it from there.
 
-1. Set the *AUDIENCE* to the audience we defined for the API: *HTTP&#x200B;://acme-fm-backend-api*, and
-save the .env file.
+1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API: *HTTP&#x200B;://acme-fm-backend-api*.
 
-1. In a terminal window navigate to the API folder and use *npm* to install the dependency packages:
+1. Save the .env file.
+
+1. In the Explorer panel locate the folder "Module 02/API".
+Right-click on the folder and choose *Open in Integrated Terminal*.
+
+1. In the new terminal window use *npm* to install the dependency packages:
 
     ```bash
-    $ cd "Module 02/API"
     $ npm install
     ```
 
-1. In the API folder expand *src* and open the *server.js* file.
-Our focus is on adding authorization; everything else has been provided for you.
+1. Click on the .env file in the right panel just to set the focus.
+
+1. In the Explorer panel find the API folder, expand *src*, and double-click *server.js* to open it.
+If you explore this file our focus is on adding authorization; everything else has been provided for you.
 
 1. Open the *Run/Debug* panel from the VS Code toolbar.
 
-1. In the dropdown at the upper right of the panel select *Module 2: Launch Backend API*.
+1. In the dropdown at the upper right of the panel select the *Module 2: Launch Backend API* run configuration.
 
 1. Click the run button next to the dropdown and launch the API.
 
@@ -174,8 +181,8 @@ Click on an endpoint detail to make sure the application returns JSON data.
 1. Most of the code in the service is very similar to the application, up to the point where the Auth0
 middleware is inserted.
 After that is registered the endpoints that follow all require an access token.
-Find the endpoint for the landing page, *app.get('/'...*
-After that call to *app.get* register
+Find the endpoint registration for the landing page that starts with *app.get('/'...*.
+After the endpoint registration (the end of the function call) register
 the Auth0 middleware to require the access token by inserting this code:
 
     ```js
@@ -188,28 +195,32 @@ the Auth0 middleware to require the access token by inserting this code:
     ```
 
 1. We need to set the scopes for each of the endpoints.
-Locate the /totals endpoint beginning with *app.get('/:userid/totals'...*
-Add the *RequiredScopes* call to register the middleware that rejects the request if
-the token does not have the *read:totals* scope:
+Locate the /totals endpoint beginning with *app.get('/:userid/totals'...*:
+
+    ```js
+    app.get('/:userid/totals', (req, res) => {
+    ```
+
+1. Change the opening line of the registration by adding *RequiredScopes(),* as the second
+argument to *app.get*:
 
     ```js
     app.get('/:userid/totals', requiredScopes('read:totals'), (req, res) => {
     ```
 
-1. Do the same for the /reports endpoint beginning with *app.get('/:userid/reports'...*,
-except the scope is *read:reports*:
+1. Do the same for the /reports endpoint beginning with *app.get('/:userid/reports'...*:
 
     ```js
     app.get('/:userid/totals', requiredScopes('read:reports'), (req, res) => {
     ```
 
-1. That's it!
-Locate and click the restart button in the Run/Debug toolbar that pops up when the service is running.
+1. Make sure the file is saved, and *nodemon* should restart the service automatically.
+Remember, you can always restart it manually from the Run/Debug toolbar:
 
     <div style="text-align: center"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
 
 1. From the API landing page make sure following the links to the *totals* and *reports* endpoints are
-rejected because there is no token.
+rejected with a permission problem because you are not providing an access token.
 You will see a JSON error message like this:
 
     ```json
@@ -221,25 +232,47 @@ You will see a JSON error message like this:
     <div style="text-align: center"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
 
-## Obtain and Use the Access Token in the Application
+## Part 5: Obtain and Use the Access Token in the Application
 
-Most of the work is already done in the application from the last lab.
+This application picks up where Module 01 left off.
 We just have to add a request for the token and then
 leverage it to make API calls.
 
-1. In VS Code open the *Module 02/Acme/src/app.js* file.
+1. In the Explorer panel find the *Module 02/Acme* folder, right-click it, and choose *Open in Integrated Terminal"
+to get a new terminal window in the correct folder.
+Alternatively you could use the current terminal window and issue a *cd ../Acme* command.
+
+1. In the terminal window use *npm* to install the dependency packages:
+
+    ```bash
+    $ npm install
+    ```
+
+1. In VS Code click on the open *server.js* file to set to focus to the right pane in the editor,
+and then in the Explorer panel double-click the *Module 02/Acme/.env file to open it.
+
+1. Set the *CLIENT_ID, CLIENT_SECRET,* and *ISSUER_BASE_URL* as we did in Module 01.
+Hint: go find the .env file from Module01 and copy the three values.
+
+1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*http&200B;//acme-fm-backend-api*".
+
+1. Set the BACKEND_PORT to the port the API will listen on: "38500"
+
+1. Save the file.
+
+1. In the Explorer panel find the *Module 02/Acme/src/app.js* file and double-click to open it.
+Hint: if it opens in the left editor panel instead of the right panel, click the tab and drag it to the right panel.
 
 1. Locate the configuration for the Auth0 client that is registered as the Express middleware: *app.use(auth({...*
 
-1. Add the following audience line to the existing *authorizationParams* section to request a grant for an access token for the backend API:
+1. Add the following audience line to the existing *authorizationParams* section.
+This configures the application to request a grant for an access token that matches the backend API we configured:
 
-    ```js
-    authorizationParams: {
-        audience: process.env.BACKEND_AUDIENCE,
-    ```
+    <pre><code language="js"><span style="color: #aaaaaa;">authorizationParams: {</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">audience</span>: process.env.BACKEND_AUDIENCE,</code></pre>
+
     We externalized the audience and URL values for the backend API in the environment.
 
-1. Add this line to the authorizationParams* section to include the required scopes; *openid, profile,* and *email* must be included
+1. Add this second line to the authorizationParams* section to include the required scopes; *openid, profile,* and *email* must be included
 to get the ID token properly:
 
     ```js
@@ -247,7 +280,7 @@ to get the ID token properly:
     ```
 
 1. We already added a try...catch to the endpoint for the home page.
-You do not have to add this, it is outside the class scope:
+You do not have to add this, how you can use fetch to call an API is outside the class scope:
     ```js
     app.get("/", async (req, res) => {
         let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
@@ -258,7 +291,6 @@ You do not have to add this, it is outside the class scope:
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
                     }
                 }
                 const response = await fetch(apiUrl, config)
@@ -274,8 +306,9 @@ You do not have to add this, it is outside the class scope:
     ```
     In the previous iteration of the application the data was embedded, and the calculation of *total* and *count* was
     passed to the *pug* page template.
-    Now the access token is set up as the bearer token in a request header, and *fetch* is used to go get the data from the API.
-    If the request is OK the data is passed to *pug*, otherwise the *catch* eats any error and null data is passed to *pug*.
+    Now we will use *fetch* to go get the data from the API.
+    If the request is OK the data is passed to *pug*, otherwise the *catch* eats any error and null data is passed to *pug*,
+    which causes the page to report the internal error.
 
     Pay attention to the fifth line: *locals* has been initialized with the user object from the request; this is an object
     that the Auth0 middleware inserts into the request for an authenticated user.
@@ -289,38 +322,81 @@ You do not have to add this, it is outside the class scope:
     Note the middleware provides an object named *accessToken* containing the expiration date, etc.
     that itself has the real access token as the *access_token* property.
 
-1. In the Run/Debug panel make sure *Module 2: ACME FM* is selected as the launch configuration and launch the program.
+1. Well, we were not completely truthful!
+In order to make the API call you have to pass the access token, that is the whole point of the exercise.
+To send the bearer token add this line to the *headers* in the configuration we were just looking at for
+the call to fetch (below 'Content-Type' and 'Accept'):
+
+    ```js
+    'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
+    ```
+
+1. In the Run/Debug panel make sure *Launch Module 2: ACME FM* is selected as the launch configuration and launch the program.
 
 1. Sign on to the app with the user from before; this should be the user that has the role with the API permissions.
 
 1. The landing page should show an internal error talking to the API.
-The API is not running, we just wanted to make sure the app would launch first!
+The API is not running, we just wanted to make sure the app would launch first and verify the authentication provides the access token!
+
+1. Click the name of the user on the landing page or the user icon at the upper right to
+display the user information:
+
+1. Hover over the second badge, the access token, and select *Inspect*:
+
+    <div style="text-align: center;"><img src="./.assets/images/application-at-badge.png" /></div>
+
+1. This will launch the access token to decipher the contents at *https://jwt.io*.
+Check that the permissions claim is in the token and has *read:totals* and *read:expenses*.
+
+1. Close the *jwt.io* tab in the browser.
 
 1. Logout of the application.
 
-1. Stop the application from the Run/Debug toolbar.
+1. Stop the application from the Run/Debug toolbar:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
 1. In the Run/Debug panel select the configuration "Module 2: Launch All".
+This launches two apps at the same time, the backend and the Acme application.
+Both show up in the *Call Stack* in the Run/Debug panel:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-multiple-apps.png" /></div>
+
+    If you click on a line it will show the output from that app in the *Debug Console*.
+
+    When you hover on a line, it shows the Run/Debug toolbar for that application, so you need to manage
+    stopping and restarting each application from this window.
 
 1. Launch the configuration; both the service and the application will launch.
-Note there are two lines in the Run/Debug Stack window, each with their own toolbar: one for the service and one for the app.
+Note: now there are two lines in the Run/Debug Stack window, each with their own toolbar: one for the service and one for the app.
 
 1. Sign on to the application with the same user.
 Verify that the after sign-on the total and count is displayed for the user!
 
-<div style="text-align: center;"><img src="./.assets/images/application-landing-page.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/application-landing-page.png" /></div>
 
 1. Check the *Expense's* page to make sure the API is called to get the expenses.
 
-1. Sign out.
+1. When you are finished exploring the application sign the user out with the *Logout* link.
 
-1. Stop the service and application; you have to click the stop button for each one.
+1. Stop the application with red square in the Run/Debug toolbar in VS Code:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
+
+1. Close any open terminal windows.
+Look for the trashcan in the terminal tab in the lower panel,
+there will be more than one if multiple
+terminals are open:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
+
+1. Close any open files except for these instructions.
 
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
-When your instructor says you are ready to start the next Lab,
-Close all the editor windows in the right-side panel, and then follow this
-link to the lab instructions: [**Module 3 Lab**](./module03-instructions.md).
+When your instructor says you are ready to start the next lab
+close any open editor windows besides these instructions, and then follow this
+link to the next lab instructions: [**Module 3 Lab**](./module03-instructions.md).
 
 [**Table of Contents**](./appdev-workspace.md)

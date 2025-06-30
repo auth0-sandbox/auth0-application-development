@@ -39,7 +39,23 @@
                 "--watch",
                 ".env"
             ],
-            "program": "app.js",
+            "program": "src/app.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 2: Launch Backend API",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/server.js",
             "restart": true,
             "console": "internalConsole"
         },
@@ -47,33 +63,17 @@
             "type": "node",
             "request": "launch",
             "name": "Module 2: Launch ACME FM",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 02/Acme"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Module 2: Launch Backend API",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceRoot}/Module 02/API/src/server.js",
-            "cwd": "${workspaceRoot}/Module 02/API"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Module 3: Launch ACME FM",
-            "cwd": "${workspaceRoot}/Module 03/Acme",
-            "sourceMaps": true,
-            "runtimeExecutable": "npm",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme",
+            "runtimeExecutable": "nodemon",
             "runtimeArgs": [
-                "run-script",
-                "dev"
-            ]
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/app.js",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
@@ -94,14 +94,30 @@
             ],
             "program": "${workspaceRoot}/Module 03/API/src/server.js",
             "cwd": "${workspaceRoot}/Module 03/API"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Solutions/Module 03/Acme",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "app.js",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
         {
             "name": "Module 2: Launch All",
             "configurations": [
-                "Module 2: Launch ACME FM",
-                "Module 2: Launch Backend API"
+                "Module 2: Launch Backend API",
+                "Module 2: Launch ACME FM"
             ]
         },
         {

@@ -75,6 +75,8 @@ app.use(
         authRequired: false,
         authorizationParams: {
             response_type: 'code',
+            audience: process.env.BACKEND_AUDIENCE,
+            scope: 'openid profile email read:totals read:reports'
         }
     })
 );

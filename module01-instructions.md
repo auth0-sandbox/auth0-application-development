@@ -348,8 +348,9 @@ details:
 
     <div style="text-align: center;"><img src="./.assets/images/application-user-page.png" /></div>
 
-1. When you are finished exploring the application stop it using the Run/Debug
-toolbar in VS Code:
+1. When you are finished exploring the application sign the user out with the *Logout* link.
+
+1. Stop the application with red square in the Run/Debug toolbar in VS Code:
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
@@ -358,13 +359,15 @@ Look for the trashcan in the terminal tab in the lower panel,
 there will be more than one if multiple
 terminals are open:
 
-    div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
+
+1. Close any open files except for these instructions.
 
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
-When your instructor says you are ready to start the next Lab,
-Close all the editor windows in the right-side panel, and then follow this
-link to the lab instructions: [**Module 2 Lab**](./module02-instructions.md).
+When your instructor says you are ready to start the next lab
+close any open editor windows besides these instructions, and then follow this
+link to the next lab instructions: [**Module 2 Lab**](./module02-instructions.md).
 
 [**Table of Contents**](./appdev-workspace.md)
