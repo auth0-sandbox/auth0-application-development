@@ -12,10 +12,10 @@ Experienced programmers will have a low learning curve to switch to JavaScript, 
 will be necessary to use JavaScript for the single-page applications anyway.
 *Express* is chosen as the embedded web server framework to process HTTP requests in NodeJS.
 Express is similar to Flask or FastAPI in Python, Spring in Java, or Kestrel (part of ASP.NET Core) in .NET.
-Along the way the features of the Auth0 express-openid-connect SDK will be explored;
-the basic functionality of Auth0 Web Application SDKs is similar across all the platforms.
+Along the way the features of the Auth0 express-openid-connect SDK will be explored, but
+the basic functionality of Auth0 Web Application SDKs is similar across all the frameworks.
 
-## Setting Up the Lab
+## Part 1: Setting Up the Lab
 
 1. Verify the *Explorer panel* is displayed.
 The first icon in the toolbar is the *Explorer* icon
@@ -27,23 +27,23 @@ Ctrl/cmd+shift+E is the keyboard shortcut to open the Explorer panel.
 Right-click the *app.js* file and select *Open to the Side*.
 VS Code will split the editor panel and show these instructions on the left, and the app.js file on the right.
 
-1. Open the lower panel with a terminal window using the
-*View &rarr; Terminal* or *Terminal &rarr; New Terminal* menu items.
-This panel also contains the *Problems, Output, Debug Console, Ports,* and *Comments* tabs.
+1. Locate the *Module 01/Acme* folder in the Explorer.
+Right-click the word *Acme* and select *Open in Integrated Terminal*.
+This puts the terminal in the correct folder to start with:
 
-1. In the terminal window, change directory to the "Acme" folder in "Module 01".
-The name is quoted in the command because of the space.
-Run the *Node Package Manager* command *npm* to install the project dependencies ($ is the prompt).
+    <div style="text-align: center;"><img src="./.assets/images/vscode-explorer-open-terminal.png" /></div>
+
+1. In the terminal window
+run the *Node Package Manager* command *npm* to install the project dependencies ($ is the prompt).
 Do not worry about any warnings from *npm*:
     ```
-    $ cd "Module 01/Acme"
     $ npm install
     ```
 
 1. If you want a little more room to work in the editor, click the Explorer icon on the toolbar to close that panel.
 This should be a satisfactory working environment if your display supports 1920x1080 (regular HD) or higher.
 
-## Registering the Auth0 Application
+## Part 2: Registering the Auth0 Application
 
 1. In your browser open the dashboard for your Auth0 tenant.
 If it is already open, just go to that tab.
@@ -111,7 +111,7 @@ Note, we are not quite done yet because we need to configure the *callback* and
 *logout* URLs on the Auth0 side.
 But, if you are running in a GitHub Codespace we do not know the URL and port number yet!
 
-## Integrating Authentication into the Express Application
+## Part 3: Integrating Authentication into the Express Application
 
 1. This application is based on the *Express* framework.
 Express is a JavaScript framework for web applications and services that
@@ -260,7 +260,7 @@ The embedded web server is started by calling the *listen* method.
 The data for expenses is at the end of the file; this is just sample data
 for testing the application.
 
-## Testing the Express Application
+## Part 4: Testing the Express Application
 
 1. Open the *Run/Debug* panel from the toolbar 
 ![Run/Debug](./.assets/images/vscode-toolbar-rundebug.png)
@@ -276,10 +276,15 @@ If there are any errors, fix them and try to launch it again.
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-launch.png" /></div>
 
 1. When Run/Debug launches the application, it displays a toolbar where the red square may be used
-to stop the application, and the "recycle" button will restart it.
-You will need to restart the application if you make any changes to the code while it is running:
+to stop the application.
+The run configuration selected launches the app.js file using *nodemon*,
+which monitors the application files for changes.
+Any changes will cause the application to reload automatically.
+You can always restart the application manually with the "recycle" button:
+
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-restart.png" /></div>
+
 
 
 1. In the *Debug Console* the last line printed out (if the application runs) is a link to
@@ -295,7 +300,9 @@ URL it does not recognize:
     <div style="text-align: center;">
     <img src="./.assets/images/auth0-bad-callback-url.png" /></div>
 
-1. In the *DEBUG CONSOLE* panel in VS Code, find and copy the URL
+1. Do not trust the URL that Auth0 display,
+the application could have sent the wrong information!
+In the *DEBUG CONSOLE* panel in VS Code, find and copy the URL
 that you just used to launch the application.
 If you are working on the project locally, this will be http://localhost:37500.
 If you are in a GitHub Codespace the server will have a random name like "cuddly-journey".
@@ -303,7 +310,8 @@ If you are in a GitHub Codespace the server will have a random name like "cuddly
 1. In your Auth0 tenant find the application configuration and look at the *Settings* tab.
 Scroll down the page until you find the section for *Application URIs*.
 
-    URLs are a subset of URIs, so find the *Allowed Logout URLs* and past the URL you just
+    URLs are a subset of URIs.
+    Find the *Allowed Logout URLs* and past the URL you just
 copied in that field:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-logout-url.png" /></div>
@@ -314,19 +322,21 @@ Paste the copied URL there too, and then add */callback* to the end of it:
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-callback-url.png" /></div>
 
     Both of these URLs are correct if you are working on your local computer.
-    Again, the URL will be different with a random name if you are running in a GitHub Codespace.
+    Again, the URL will contain a random name instead of "localhost" if you are working in a GitHub Codespace.
 
 1. Click *Save* and save the changes to the application configuration.
 
 1. Back on the error page that Auth0 is displaying, click the back button to go back
 to the application landing page.
 
-1. Click the login button at the top right.
-This time it should work.
+1. Click the login button at the top right again.
+This time it should work amd you will see the
+login page.
 There is not a user yet to sign in,
 so click the link to *Sign up* and create a user for yourself.
 Do not use 'Continue with Google', we must create a local user.
 You can use any email address and password that you want, it does not have to be real.
+
 <div style="text-align: center;">
 <img src="./.assets/images/auth0-application-login.png" /></div>
 
@@ -336,11 +346,13 @@ running are localhost always require consent.
 This is to protect users from malware running launching a *phishing application* locally,
 developers running applications in a local sandbox just need to live with it.
 You will not see this if an HTTPS address to a GitHub Codespace is used.
+
 <div style="text-align: center;">
 <img src="./.assets/images/auth0-application-consent.png" /></div>
 
 1. Once you land on the *Home* page, you can click the username to see the user
 details:
+
 <div style="text-align: center;">
 <img src="./.assets/images/application-user-page.png" /></div>
 
@@ -349,7 +361,15 @@ toolbar in VS Code:
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
-<br>z![Stop](./.assets/images/stop.png)
+1. Close any open terminal windows.
+Look for the trashcan in the terminal tab in the lower panel,
+there will be more than one if multiple
+terminals are open:
+
+    <div style="text-align: center;"><img src="./.assets/images/vscode-terminal-trashcan.png" /></div>
+
+
+<br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
 When your instructor says you are ready to start the next Lab,

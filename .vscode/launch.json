@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -17,12 +14,34 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Module 1: Launch ACME FM",
-            "skipFiles": [
-                "<node_internals>/**"
+            "name": "Nodemon Current File",
+            "cwd": "${fileDirname}/..",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
             ],
-            "program": "${workspaceRoot}/Module 01/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 01/Acme"
+            "program": "${file}",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 1: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 01/Acme",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "app.js",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
@@ -31,8 +50,6 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 02/Acme"
             "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
             "cwd": "${workspaceRoot}/Module 02/Acme"
         },
