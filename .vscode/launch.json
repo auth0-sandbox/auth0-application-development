@@ -47,7 +47,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 2: Launch Backend API",
-            "cwd": "${workspaceRoot}/Solutions/Module 02/API",
+            "cwd": "${workspaceRoot}/Module 02/API",
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--watch",
@@ -63,7 +63,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 2: Launch ACME FM",
-            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme",
+            "cwd": "${workspaceRoot}/Module 02/Acme",
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--watch",
@@ -79,27 +79,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 3: Launch Backend API",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceRoot}/Module 03/API/src/server.js",
-            "cwd": "${workspaceRoot}/Module 03/API"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Module 3: Launch BFF API",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceRoot}/Module 03/API/src/server.js",
-            "cwd": "${workspaceRoot}/Module 03/API"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Module 3: Launch ACME FM",
-            "cwd": "${workspaceRoot}/Solutions/Module 03/Acme",
+            "cwd": "${workspaceRoot}/Module 03/API",
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--watch",
@@ -107,7 +87,39 @@
                 "--watch",
                 ".env"
             ],
-            "program": "app.js",
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch BFF API",
+            "cwd": "${workspaceRoot}/Module 03/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 03/Acme",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/app.js",
             "restart": true,
             "console": "internalConsole"
         }

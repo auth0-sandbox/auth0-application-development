@@ -159,7 +159,7 @@ Put this right after the imports:
 1. This application chooses to externalize the configuration values for the connection
 to Auth0 in the .env file.
 Retrieving the values from the .env file is handled by calling *config* from the *dotenv*
-module, so add this statement after deconstructing auth0Express:
+module, so add this statement after destructuring auth0Express:
     ```js
     dotenv.config()
     ```
