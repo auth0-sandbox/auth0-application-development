@@ -1,5 +1,7 @@
 <script setup>
-import Home from './views/Home.vue'
+import { getUser } from './services/index.js'
+
+var user = getUser()
 </script>
 
 <template>
@@ -14,15 +16,22 @@ import Home from './views/Home.vue'
                 <li><router-link to="/">Home</router-link></li>
                 <li><router-link to="/expenses">Expenses</router-link></li>
                 <li class="spacer"></li>
-                <li v-if="user !== undefined"><router-link to="/logout">Logout</router-link></li>
-                <li v-else"><router-link to="/login">Login</router-link></li>
-                <li class="profile"><router-link to="/profile"><img src="./assets/images/profile.png" alt="Profile Picture" /></router-link></li>
+                <template v-if="user.name == 'Anonymous'">
+                    <li><router-link to="/login">Login</router-link></li>
+                    <li class="profile"><img src="./assets/images/profile.png" alt="Profile Picture" /></li>
+                </template>
+                <template v-else>
+                    <li><router-link to="/logout">Logout</router-link></li>
+                    <li class="profile"><router-link to="/profile"><img :src="user.picture" alt="Profile Picture"/></router-link></li>
+                </template>
             </ul>
         </nav>
-    </header>>
+    </header>
 
     <main class="content">
-        <router-view />
+        <Suspense>
+            <router-view />
+        </Suspense>
     </main>
 </template>
 

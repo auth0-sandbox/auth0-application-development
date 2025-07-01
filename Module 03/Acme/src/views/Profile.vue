@@ -1,5 +1,5 @@
 <script setup>
-import { getProfile, login } from '../services/bff.js'
+import { getProfile, login } from '../services/index.js'
 var profile = null;
 
 try {

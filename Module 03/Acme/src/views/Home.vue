@@ -1,16 +1,17 @@
 <script setup>
-defineProps({
-import { getTotals, login } from '../services/bff.js'
+import { getTotals, getUser, login } from '../services/index.js'
+var user = null
 var count = null
-var total == null
+var total = null
+var user = getUser()
  
 try {
-    var totals = await getTotals();
-    count = totals.count;
-    total = totals.total;  
+    var totals = await getTotals()
+    count = totals.count
+    total = totals.total
 } catch (error) {
     if (error == 401) {
-        login('/');
+        login('/')
     }
 }
 </script>
@@ -18,9 +19,9 @@ try {
 <template>
     <h1>Home Page</h1>
     <div>
-        <p>Hello <span v-if="user"><a href="/profile">{{ user.name }}</a></span><span v-else>Anonymous</span>,</p>
+        <p>Hello <span v-if="user && user.name !== 'Anonymous'"><a href="/profile">{{ user.name }}</a></span><span v-else>{{  user.name }}</span>,</p>
     </div>
-    <div v-if="user">
+    <div v-if="user.name !== 'Anonymous'">
         <p>So far, this app has been used to manage:</p>
         <div v-if="total == null">
             <p>Internal error retreiving expenses</p>
@@ -36,5 +37,3 @@ try {
         <p>Please sign on to see your personal expenses.</p>
     </div>
 </template>
-
-<style scoped></style>

@@ -1,11 +1,5 @@
 <script setup>
-import { logout } from '../services/bff.js'
+import { logout } from '../services/index.js'
 
-logout(('/')
+logout('/')
 </script>
-
-<template>
-    <!-- Never rendered, logout will redirect the browser before we get here. -->
-</template>
-
-<style scoped></style>

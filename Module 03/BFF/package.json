@@ -7,19 +7,19 @@
     "author": "Auth0",
     "type": "module",
     "scripts": {
-        "start": "node src/server"
+        "start": "node src/app"
     },
     "dependencies": {
+        "auth0": "^4.26.0",
         "cookie-parser": "~1.4.6",
         "cors": "^2.8.5",
         "dotenv": "16.0.1",
         "express": "^4.18.1",
-        "express-oauth2-jwt-bearer": "^1.6.1",
-        "express-openid-connect": "^2.7.3",
-        "express-session": "^1.17.3",
-        "http-errors": "~2.0.0",
+        "express-openid-connect": "^2.18.1",
+        "jsonwebtoken": "^9.0.2",
         "morgan": "~1.10.0",
         "nodemon": "^3.1.10",
+        "openid-client": "^6.6.2",
         "pug": "3.0.2"
     }
 }

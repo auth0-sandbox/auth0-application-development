@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    .content
+        h1 Acme Expenses Backend for Frontend API
+        h2 Permissions
+        p This API is protected by Auth0. You can use the following permissions to access the API:
+        ul
+            li read:profile - View the current user profile
+            li read:reports - View all expenses
+            li write:reports - Add, edit, or delete expenses
+        h2 Endpoints
+        ul 
+            li GET / - Displays this page
+            li GET #[a(href="/profile") /profile] - Returns the user profile from the Auth0 tenant (requires read:profile permission)
+            li GET #[a(href="/totals") /totals] - Returns the total amount of expenses (requires read:totals permission)
+            li GET #[a(href="/reports") /reports] - Returns all expenses (requires read:reports permission)
