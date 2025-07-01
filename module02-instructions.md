@@ -71,8 +71,6 @@ and click the *+ Add* button:
 1. Fill in a second permission as *read:reports* and a description of *Read expense reports*, and
 click the *+ Add* button.
 
-This completes the API integration.
-
 ## Part 3: Use Role-based Access Control (RBAC) to allow user access
 
 Users may be assigned API permissions directly.
@@ -254,9 +252,10 @@ and then in the Explorer panel double-click the *Module 02/Acme/.env file to ope
 1. Set the *CLIENT_ID, CLIENT_SECRET,* and *ISSUER_BASE_URL* as we did in Module 01.
 Hint: go find the .env file from Module01 and copy the three values.
 
-1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*http&200B;//acme-fm-backend-api*".
+1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*http&#x200B;://acme-fm-backend-api*".
 
-1. Set the BACKEND_PORT to the port the API will listen on: "38500"
+1. Set the BACKEND_URL to the local URL the API will listen on: "http&#x200B;://localhost:38500".
+The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
 
 1. Save the file.
 
@@ -324,12 +323,19 @@ You do not have to add this, how you can use fetch to call an API is outside the
 
 1. Well, we were not completely truthful!
 In order to make the API call you have to pass the access token, that is the whole point of the exercise.
-To send the bearer token add this line to the *headers* in the configuration we were just looking at for
+Locate the middleware registration that beings with *app.get("/", async (req, res) => {*, the one we were just looking at above.
+
+1. To send the bearer token add this line to the *headers* in the configuration we were just looking at for
 the call to fetch (below 'Content-Type' and 'Accept'):
 
     ```js
     'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
     ```
+
+    Note the grave accents (`) around the JavaScript template literal (the value); they are not single quotation marks!
+
+1. Locate the registration for the expenses endpoint: *app.get("/expenses", requiresAuth(), async (req, res, next) => {*.
+Add the same authorization header we just did in the previous step to the headers in this endpoint as well.
 
 1. In the Run/Debug panel make sure *Launch Module 2: ACME FM* is selected as the launch configuration and launch the program.
 

@@ -20,10 +20,6 @@ if (!process.env.BASE_URL) {
 
 const app = express()
 
-app.use((req, res, next) =>
-    process.env.BASE_URL.includes(req.headers.host) ? next() : res.status(301).redirect(process.env.BASE_URL)
-)
-
 const __filename = fileURLToPath(import.meta.url)
 const __fileDirectory = dirname(__filename)
 const __dirname = normalize(path.join(__fileDirectory, ".."))

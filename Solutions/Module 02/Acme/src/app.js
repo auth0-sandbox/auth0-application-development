@@ -27,11 +27,6 @@ if (!process.env.BASE_URL) {
 // Create Express
 const app = express()
 
-// Send back HTTP 301 redirect if the request is not to the app URL
-app.use((req, res, next) =>
-    process.env.BASE_URL.includes(req.headers.host) ? next() : res.status(301).redirect(process.env.BASE_URL)
-)
-
 // Assuming this file is in the src directory, find the project directory
 const __filename = fileURLToPath(import.meta.url)
 const __fileDirectory = dirname(__filename)
