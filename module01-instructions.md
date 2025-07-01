@@ -52,7 +52,7 @@ If it is already open, just go to that tab.
 
 1. Click the large blue button that says *+ Create Application*.
 
-1. Call the application *ACME Financial Services*, click on *Regular Web Applications*
+1. Call the application *ACME Financial Management*, click on *Regular Web Applications*
 for the application type, and click the blue *Create* button:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-create.png" /></div>
