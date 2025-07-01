@@ -27,11 +27,6 @@ if (!process.env.BASE_URL) {
 // Create Express
 const app = express()
 
-// Send back HTTP 301 redirect if the request is not to the app URL
-app.use((req, res, next) =>
-    process.env.BASE_URL.includes(req.headers.host) ? next() : res.status(301).redirect(process.env.BASE_URL)
-)
-
 // Assuming this file is in the src directory, find the project directory
 const __filename = fileURLToPath(import.meta.url)
 const __fileDirectory = dirname(__filename)
@@ -54,7 +49,6 @@ app.use(
     session({
         secret: process.env.SECRET,
         resave: false,
-//        saveUninitialized: true,
         saveUninitialized: false,
         cookie: {
             httpOnly: false,
@@ -76,8 +70,6 @@ app.use(
         authRequired: false,
         authorizationParams: {
             response_type: 'code',
-            audience: process.env.BACKEND_AUDIENCE,
-            scope: 'openid profile email read:totals read:reports',
         }
     })
 );
@@ -92,7 +84,6 @@ app.get("/", async (req, res) => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
                 }
             }
             const response = await fetch(apiUrl, config)
@@ -106,8 +97,7 @@ app.get("/", async (req, res) => {
     res.render("home", locals)
 })
 
-// Show user information from the authentication and authorization.
-app.get("/user", requiresAuth(),  async (req, res) => {
+app.get("/user", requiresAuth(), async (req, res) => {
     res.render("user", {
         user: req.oidc && req.oidc.user,
         id_token: req.oidc && req.oidc.idToken,
@@ -124,7 +114,6 @@ app.get("/expenses", requiresAuth(), async (req, res, next) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
             }
         }
         const response = await fetch(apiUrl, config)

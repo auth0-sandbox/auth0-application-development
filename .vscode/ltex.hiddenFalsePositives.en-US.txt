@@ -29,3 +29,35 @@
 {"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd the RequiredScopes call to register the middleware that rejects the request if the token does not have the read:totals scope:\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QScroll down to RBAC Settings enable Enable RBAC and Add Permissions in the Access Token.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the AUDIENCE to the audience we defined in Auth0 for the API: HTTP​://acme-fm-backend-api.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QFind the endpoint registration for the landing page that starts with app.get('/'....\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the /totals endpoint beginning with app.get('/:userid/totals'...:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QChange the opening line of the registration by adding RequiredScopes(), as the second argument to app.get:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QDo the same for the /reports endpoint beginning with app.get('/:userid/reports'...:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAlternatively you could use the current terminal window and issue a cd ../Acme command.\\E$"}
+{"rule":"DOUBLE_PUNCTUATION","sentence":"^\\QAlternatively you could use the current terminal window and issue a cd ../Acme command.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the BACKEND_AUDIENCE to the audience we defined for the API: \"http​://acme-fm-backend-api\".\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the BACKEND_AUDIENCE to the audience we defined for the API: \"http​://acme-fm-backend-api\".\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the BACKEND_URL to the local URL the API will listen on: \"http​://localhost:38500\".\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd the following audience line to the existing authorizationParams section.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd this second line to the authorizationParams* section to include the required scopes; openid, profile, and email must be included to get the ID token properly:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdd this second line to the authorizationParams* section to include the required scopes; openid, profile, and email must be included to get the ID token properly:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the middleware registration that beings with app.get(\"/\", async (req, res) => {, the one we were just looking at above.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the middleware registration that beings with app.get(\"/\", async (req, res) => {, the one we were just looking at above.\\E$"}
+{"rule":"ARROWS","sentence":"^\\QLocate the middleware registration that beings with app.get(\"/\", async (req, res) => {, the one we were just looking at above.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the middleware registration that beings with app.get(\"/\", async (req, res) => {, the one we were just looking at above.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"ARROWS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"ARROWS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}

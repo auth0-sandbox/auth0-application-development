@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -17,46 +14,66 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Module 1: Launch ACME FM",
-            "skipFiles": [
-                "<node_internals>/**"
+            "name": "Nodemon Current File",
+            "cwd": "${fileDirname}/..",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
             ],
-            "program": "${workspaceRoot}/Module 01/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 01/Acme"
+            "program": "${file}",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Module 2: Launch ACME FM",
-            "skipFiles": [
-                "<node_internals>/**"
+            "name": "Module 1: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 01/Acme",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
             ],
-            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 02/Acme"
-            "program": "${workspaceRoot}/Module 02/Acme/src/app.js",
-            "cwd": "${workspaceRoot}/Module 02/Acme"
+            "program": "src/app.js",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Module 2: Launch Backend API",
-            "skipFiles": [
-                "<node_internals>/**"
+            "cwd": "${workspaceRoot}/Solutions/Module 02/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
             ],
-            "program": "${workspaceRoot}/Module 02/API/src/server.js",
-            "cwd": "${workspaceRoot}/Module 02/API"
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Module 3: Launch ACME FM",
-            "cwd": "${workspaceRoot}/Module 03/Acme",
-            "sourceMaps": true,
-            "runtimeExecutable": "npm",
+            "name": "Module 2: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Solutions/Module 02/Acme",
+            "runtimeExecutable": "nodemon",
             "runtimeArgs": [
-                "run-script",
-                "dev"
-            ]
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/app.js",
+            "restart": true,
+            "console": "internalConsole"
         },
         {
             "type": "node",
@@ -77,14 +94,30 @@
             ],
             "program": "${workspaceRoot}/Module 03/API/src/server.js",
             "cwd": "${workspaceRoot}/Module 03/API"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 3: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Solutions/Module 03/Acme",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "app.js",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
         {
             "name": "Module 2: Launch All",
             "configurations": [
-                "Module 2: Launch ACME FM",
-                "Module 2: Launch Backend API"
+                "Module 2: Launch Backend API",
+                "Module 2: Launch ACME FM"
             ]
         },
         {

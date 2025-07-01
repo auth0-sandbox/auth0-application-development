@@ -4,5 +4,5 @@
         "*.md": "vscode.markdown.preview.editor"
     },
     "editor.minimap.enabled": false,
-    "files.autoSave": "off"
+    "files.autoSave": "afterDelay"
 }

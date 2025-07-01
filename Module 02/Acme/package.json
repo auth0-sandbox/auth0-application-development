@@ -2,7 +2,7 @@
     "name": "acme-financial-management",
     "version": "1.0.0",
     "private": true,
-    "description": "Auth0 Application Development Lab 1",
+    "description": "Auth0 Application Development Lab 2",
     "license": "MIT",
     "author": "Auth0",
     "type": "module",
@@ -17,7 +17,7 @@
         "express-session": "^1.18.1",
         "http-errors": "~2.0.0",
         "morgan": "~1.10.0",
-        "pug": "3.0.3",
-        "vue-router": "^4.5.1"
+        "nodemon": "^3.1.10",
+        "pug": "3.0.3"
     }
 }
