@@ -1,10 +1,14 @@
 <script setup>
-defineProps({
-    msg: {
-        type: String,
-        required: true,
-    },
-})
+import { getExpenses, login } from '../services/bff.js'
+var expenses = null;
+
+try {
+    expenses = await getExpenses();
+} catch (error) {
+    if (error == 401) {
+        login('/expenses');
+    }
+}
 </script>
 
 <template>

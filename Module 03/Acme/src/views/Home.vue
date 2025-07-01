@@ -1,10 +1,18 @@
 <script setup>
 defineProps({
-    msg: {
-        type: String,
-        required: true,
-    },
-})
+import { getTotals, login } from '../services/bff.js'
+var count = null
+var total == null
+ 
+try {
+    var totals = await getTotals();
+    count = totals.count;
+    total = totals.total;  
+} catch (error) {
+    if (error == 401) {
+        login('/');
+    }
+}
 </script>
 
 <template>
