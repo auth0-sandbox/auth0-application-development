@@ -45,7 +45,7 @@ This is also known as the "audience" in the application and the API itself.
 1. Leave the JSON Web Token Profile and the Signing Algorithm as *Auth0* and *RS256*, and
 click the *Create* button.
 
-1. The interface lands on the *Quickstart* tab for the new API.
+1. The Auth0 dashboard lands on the *Quickstart* tab for the new API.
 Click on the *Settings* tab; here you can change the name of the API as it appears in the dashboard, the token
 expiration, and the profile and signing algorithms.
 The assigned ID and the Identifier (audience) cannot be changed.
@@ -98,7 +98,7 @@ Select both permissions, or click the *Select: All* option, then click the
     <div style="text-align: center;"><img src="./.assets/images/auth0-role-add-api-and-permissions.png" /></div>
 
 1. User may be assigned to roles here, or roles to users in the user settings,
-you can get at it from either direction.
+you can manipulate it from either place in the Auth0 dashboard.
 Click the *Users* tab.
 
 1. Click the *Add Users* button, and select a user that requires permission to access their
@@ -130,7 +130,7 @@ choose the *ACME Financial Management* application.
 That happens to be the first part of the JWKS_URI value, up to the / in front of the path part of the URL, so you
 can get it from there.
 
-1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API: *HTTP&#x200B;://acme-fm-backend-api*.
+1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API: *http&#x200B;://acme-fm-backend-api*.
 
 1. Save the .env file.
 
@@ -178,7 +178,7 @@ Click on an endpoint detail to make sure the application returns JSON data.
 
 1. Most of the code in the service is very similar to the application, up to the point where the Auth0
 middleware is inserted.
-After that is registered the endpoints that follow all require an access token.
+After that is registered, the endpoints that follow all require an access token.
 Find the endpoint registration for the landing page that starts with *app.get('/'...*.
 After the endpoint registration (the end of the function call) register
 the Auth0 middleware to require the access token by inserting this code:
@@ -278,8 +278,8 @@ to get the ID token properly:
         scope: 'openid profile email read:totals read:reports',
     ```
 
-1. We already added a try...catch to the endpoint for the home page.
-You do not have to add this, how you can use fetch to call an API is outside the class scope:
+1. NOTE: the application already has a try...catch for the API call in the endpoint for the home page.
+You do not have to add this, but we will explain it; fetch is outside the class scope:
     ```js
     app.get("/", async (req, res) => {
         let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
@@ -332,7 +332,7 @@ the call to fetch (below 'Content-Type' and 'Accept'):
     'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
     ```
 
-    Note the grave accents (`) around the JavaScript template literal (the value); they are not single quotation marks!
+    Note the grave accents (`) around the JavaScript template literal (the value); they are not single-quotation marks!
 
 1. Locate the registration for the /expenses endpoint: *app.get("/expenses", requiresAuth(), async (req, res, next) => {*.
 Add the same authorization header we just did in the previous step to the headers in this endpoint as well.
@@ -362,7 +362,9 @@ Check that the permissions claim is in the token and has *read:totals* and *read
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
-1. In the Run/Debug panel select the configuration "Module 2: Launch All".
+1. In the Run/Debug panel select the run configuration "Module 2: Launch All".
+
+1. Click the run button to the left of the run configurations.
 This launches two apps at the same time, the backend and the Acme application.
 Both show up in the *Call Stack* in the Run/Debug panel:
 
@@ -372,9 +374,6 @@ Both show up in the *Call Stack* in the Run/Debug panel:
 
     When you hover on a line, it shows the Run/Debug toolbar for that application, so you need to manage
     stopping and restarting each application from this window.
-
-1. Launch the configuration; both the service and the application will launch.
-Note: now there are two lines in the Run/Debug Stack window, each with their own toolbar: one for the service and one for the app.
 
 1. Sign on to the application with the same user.
 Verify that the after sign-on the total and count is displayed for the user!
