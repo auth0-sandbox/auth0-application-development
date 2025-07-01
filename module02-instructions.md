@@ -236,7 +236,7 @@ This application picks up where Module 01 left off.
 We just have to add a request for the token and then
 leverage it to make API calls.
 
-1. In the Explorer panel find the *Module 02/Acme* folder, right-click it, and choose *Open in Integrated Terminal"
+1. In the Explorer panel find the *Module 02/Acme* folder, right-click it, and choose *Open in Integrated Terminal*
 to get a new terminal window in the correct folder.
 Alternatively you could use the current terminal window and issue a *cd ../Acme* command.
 
@@ -334,7 +334,7 @@ the call to fetch (below 'Content-Type' and 'Accept'):
 
     Note the grave accents (`) around the JavaScript template literal (the value); they are not single quotation marks!
 
-1. Locate the registration for the expenses endpoint: *app.get("/expenses", requiresAuth(), async (req, res, next) => {*.
+1. Locate the registration for the /expenses endpoint: *app.get("/expenses", requiresAuth(), async (req, res, next) => {*.
 Add the same authorization header we just did in the previous step to the headers in this endpoint as well.
 
 1. In the Run/Debug panel make sure *Launch Module 2: ACME FM* is selected as the launch configuration and launch the program.
