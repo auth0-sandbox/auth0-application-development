@@ -144,7 +144,7 @@ does not use them (they are ignored).
 Many folks still use them as a hangover from C, C++, Java, or C# and you can use them if you like.
 This example is following accepted conventions and not including them.
 
-1. *express-openid-connect* is built as a *CommonJS* module and will will destructure it
+1. *express-openid-connect* is built as a *CommonJS* module and will destructure it
 into the components that will be used with the following statement.
 *Destructuring* is the JavaScript technique to assign the property values of an object into
 individual variables, in this case JavaScript copies the values of the *auth* and *requiresAuth*
@@ -231,7 +231,7 @@ and add this code following that to create it and register the client in one sta
     of the Auth0 tenant at the same time the log out of our application; when the come back
     they expect to log in again.
     *authRequired* defaults to *true*, but that makes every application endpoint require authentication.
-    It is necessary to set *authRequired* to *false* to selectively protect endpoints below.
+    It is necessary to set *authRequired* as *false* to selectively protect endpoints below.
 
     The default OAuth authorization flow is *implicit*, which is deprecated and insecure.
     Adding the *response_type: "code"* to the *authorizationParams* configures the client to
@@ -240,7 +240,7 @@ and add this code following that to create it and register the client in one sta
 1. The remaining three *Express* middleware registrations are for the three endpoints
 */*, */user*, and */expenses*.
 / should be unprotected, but we need to add the *requiresAuth* middleware to
-the other two registrations so authentication will be required.
+the other two registrations, so authentication will be required.
 Change the registration for */user* to look like this by
 adding *requireAuthentcation* as the
 second argument:
@@ -291,7 +291,7 @@ This link is clickable: hold down the ctrl/cmd key and it to open the landing pa
 1. Click the login button at the top right.
 The browser will be redirected to the Auth0 tenant authorization server, but
 it will display an error because the callback URL is not set.
-You can click the link on the page *See details for this error* and it will show you the callback
+You can click the link on the page *See details for this error*, and it will show you the callback
 URL it does not recognize:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-bad-callback-url.png" /></div>
@@ -307,7 +307,7 @@ If you are in a GitHub Codespace the server will have a random name like "cuddly
 Scroll down the page until you find the section for *Application URIs*.
 
     URLs are a subset of URIs.
-    Find the *Allowed Logout URLs* and past the URL you justcopied in that field:
+    Find the *Allowed Logout URLs* and past the URL you just copied in that field:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-app-logout-url.png" /></div>
 
@@ -325,8 +325,7 @@ Paste the copied URL there too, and then add */callback* to the end of it:
 to the application landing page.
 
 1. Click the login button at the top right again.
-This time it should work amd you will see the
-login page.
+This time it should work, and you will see the login page.
 There is not a user yet to sign in,
 so click the link to *Sign up* and create a user for yourself.
 Do not use 'Continue with Google', we must create a local user.

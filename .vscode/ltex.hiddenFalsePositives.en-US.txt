@@ -61,3 +61,18 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QClose the jwt.io tab in the browser.\\E$"}
 {"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the registration for the /expenses endpoint: app.get(\"/expenses\", requiresAuth(), async (req, res, next) => {.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAlong the way the features of the Auth0 express-openid-connect SDK will be explored, but the basic functionality of Auth0 Web Application SDKs is similar across all the frameworks.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIn the terminal window (still in the module Acme folder) add the dotenv and epxress-oopenid-connect (the Auth0 Express SDK) packages to the project with the following npm command:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIn the terminal window (still in the module Acme folder) add the dotenv and epxress-oopenid-connect (the Auth0 Express SDK) packages to the project with the following npm command:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QTo reference the dotenv module and the Auth0 SDK add the following two import statements after the existing import statements in app.js:\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qexpress-openid-connect is built as a CommonJS module and will will destructure it into the components that will be used with the following statement.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qexpress-openid-connect is built as a CommonJS module and will destructure it into the components that will be used with the following statement.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QDestructuring is the JavaScript technique to assign the property values of an object into individual variables, in this case JavaScript copies the values of the auth and requiresAuth properties.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe only reason for doing this is to access the functions auth and requiresAuth without having to go through the original object.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QRetrieving the values from the .env file is handled by calling config from the dotenv module, so add this statement after destructuring auth0Express:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the app.use(session(... we just showed you in the last step, and add this code following that to create it and register the client in one statement:\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QLocate the app.use(session(... we just showed you in the last step, and add this code following that to create it and register the client in one statement:\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QidpLogout defaults to false, but for customer-facing applications we want users to log out of the Auth0 tenant at the same time the log out of our application; when the come back they expect to log in again.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q/ should be unprotected, but we need to add the requiresAuth middleware to the other two registrations so authentication will be required.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q/ should be unprotected, but we need to add the requiresAuth middleware to the other two registrations, so authentication will be required.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAdding the response_type: \"code\" to the authorizationParams configures the client to request the authorization code grant.\\E$"}

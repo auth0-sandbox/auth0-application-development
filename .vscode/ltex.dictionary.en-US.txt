@@ -11,3 +11,5 @@ RBAC
 userid
 accessToken
 PKCE
+Destructuring
+destructuring
