@@ -9,5 +9,11 @@
                 "antfu.browse-lite"
             ]
         }
-    }
+    },
+    "portsAttributes": {
+        "38443": {
+            "onAutoForward": "ignore"
+        }
+    },
+    "postCreateCommand": "mkcert -install"
 }

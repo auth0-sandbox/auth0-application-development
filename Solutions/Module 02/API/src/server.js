@@ -61,13 +61,15 @@ app.use((err, req, res, next) => {
     res.json({ status: err.status, message: err.message })
 })
 
+app.listen(process.env.PORT, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
+
 const expressOptions = {
     key: fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8'),
     cert: fs.readFileSync(process.env.CERTIFICATE_PATH, 'utf8')
 }
 
 https.createServer(expressOptions, app)
-    .listen(process.env.PORT, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
+    .listen(process.env.PORT_TLS, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
 
 const expenses = [
     {

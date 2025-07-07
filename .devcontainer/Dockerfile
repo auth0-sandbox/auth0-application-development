@@ -10,8 +10,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:dev-22-bookworm
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
-RUN echo Hello, world!
-RUN sudo apt-get update && sudo apt-get install -y mkcert && mkcert -install
+RUN sudo apt update && sudo apt-get install -y mkcert chromium
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
