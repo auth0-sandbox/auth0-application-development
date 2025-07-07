@@ -2,9 +2,10 @@
 // Backend API
 //
 
+import cors from 'cors'
 import dotenv from "dotenv"
 import express from 'express'
-import cors from 'cors'
+import fs from 'fs'
 import logger from 'morgan'
 import path, { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
@@ -13,7 +14,7 @@ dotenv.config()
 
 if (!process.env.BASE_URL) {
     process.env.BASE_URL = !process.env.CODESPACE_NAME
-        ? `http://localhost:${process.env.PORT}`
+        ? `https://localhost:${process.env.PORT}`
         : `https://${process.env.CODESPACE_NAME}-${process.env.PORT}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`
 }
 
@@ -51,7 +52,13 @@ app.use((err, req, res, next) => {
     res.json({ status: err.status, message: err.message })
 })
 
-app.listen(process.env.PORT, () => console.log(`Back-end API started at: ${process.env.BASE_URL}`))
+const expressOptions = {
+    key: fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8'),
+    cert: fs.readFileSync(process.env.CERTIFICATE_PATH, 'utf8')
+}
+
+https.createServer(expressOptions, app)
+    .listen(process.env.PORT, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
 
 const expenses = [
     {

@@ -59,17 +59,4 @@ const expressOptions = {
 }
 
 https.createServer(expressOptions, app)
-    .listen(process.env.PORT, () => console.log(`Back-end API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
-
-const expenses = [
-    {
-        date: new Date(),
-        description: 'Pizza for a Coding Dojo session.',
-        value: 102,
-    },
-    {
-        date: new Date(),
-        description: 'Coffee for a Coding Dojo session.',
-        value: 42,
-    },
-]
+    .listen(process.env.PORT, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))

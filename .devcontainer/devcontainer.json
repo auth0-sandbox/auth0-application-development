@@ -3,5 +3,6 @@
     "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:16",
     "features": {
         "node": "lts"
-    }
+    },
+    "postCreateCommand": "mkcert -install"
 }

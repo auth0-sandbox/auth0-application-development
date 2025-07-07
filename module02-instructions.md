@@ -111,11 +111,17 @@ It is possible to type and select multiple users in this field.
 
 ## Part 4: Add Access Token Support to the API
 
-Access tokens for APIs must be requested by the application as part of the authorization request.
+1. Right-click the *certificates* folder at the top-level of the project and select *Open in Integrated Terminal*.
+
+1. Use *mkcert* to create a private/public key pair for the API to serve TLS (https).
+    These keys will be placed in the *certificates* folder under the project to share with modules 3 and 4:
+    ```bash
+    $ mkcert -cert-file localhost-cert.pem -key-file localhost-cert-key.pem localhost mytestsite.localhost 127.0.0.1 ::1
+    ```
 
 1. In the VS Code Explorer panel find the API folder and right-click on *.env*.
 Choose the *Open to the Side* option.
-Notice that the *AUDIENCE*, *ISSUER* and *JWKS_URI* are not set.
+Notice that the *AUDIENCE, ISSUER, JWKS_URI, PRIVATE_KEY_PATH*, and *CERTIFICATE_PATH* are not set.
 
 1. In the Auth0 tenant use the sidebar to navigate to *Applications &rarr; Applications* and
 choose the *ACME Financial Management* application.
@@ -126,11 +132,20 @@ choose the *ACME Financial Management* application.
 
 1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
 
-1. Set the *ISSUER* to the URL of your Auth0 tenant: *HTTPS&#x200B;://\<your domain>.\<your region>.auth0.com*.
+1. Set the *ISSUER* to the URL of your Auth0 tenant: *https&#x200B;://\<your domain>.\<your region>.auth0.com*.
 That happens to be the first part of the JWKS_URI value, up to the / in front of the path part of the URL, so you
 can get it from there.
 
-1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API: *http&#x200B;://acme-fm-backend-api*.
+1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API:
+    ```
+    AUDIENCE="https://acme-fm-backend-api"
+    ```
+
+1. Set the values to locate the private key and HTTPS certificate files:
+    ```
+    PRIVATE_KEY_PATH="../../certificates/localhost-cert-key.pem"
+    CERTIFICATE_PATH="../../certificates/localhost-cert.pem"
+    ```
 
 1. Save the .env file.
 
