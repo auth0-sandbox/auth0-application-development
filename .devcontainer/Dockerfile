@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:${VARIANT}
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 FROM ubuntu:latest
-RUN apt-get update && apt-get install -y mkcert
+RUN sudo apt-get update && sudo apt-get install -y mkcert
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
