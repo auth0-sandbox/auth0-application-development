@@ -1,8 +1,6 @@
 {
     "name": "Auth0 Application Development",
-    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:16",
-    "features": {
-        "node": "lts"
-    },
-    "postCreateCommand": "mkcert -install"
+    "build": {
+        "dockerfile": "Dockerfile",
+    }
 }

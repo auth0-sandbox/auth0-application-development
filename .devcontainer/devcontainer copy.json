@@ -1,0 +1,7 @@
+{
+    "name": "Auth0 Application Development",
+    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:dev-24",
+    "features": {
+        "node": "lts"
+    }
+}
