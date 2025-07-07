@@ -3,11 +3,17 @@ extends layout
 block content
     .content
         h1 Acme Expenses Backend API
+        p 
+            | This web service provides a skeleton that applications can query for expenses: totals and reports.
+
         h2 Permissions
-        p This API is protected by Auth0. You can use the following permissions to access the API:
+        p
+            | Entrance to this API is controlled with OAuth2 access tokens.
+            | You can request the following permissions during an authorization request with the identity provider:
         ul
-            li read:reports - View all expenses
-            li write:reports - Add, edit, or delete expenses
+            li read:totals - Read user expense totals
+            li read:reports - Read user expense reports
+
         h2 Endpoints
         ul 
             li GET / - Displays this page

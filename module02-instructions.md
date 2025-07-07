@@ -209,7 +209,7 @@ argument to *app.get*:
 1. Do the same for the /reports endpoint beginning with *app.get('/:userid/reports'...*:
 
     ```js
-    app.get('/:userid/totals', requiredScopes('read:reports'), (req, res) => {
+    app.get('/:userid/reports', requiredScopes('read:reports'), (req, res) => {
     ```
 
 1. Make sure the file is saved, and *nodemon* should restart the service automatically.

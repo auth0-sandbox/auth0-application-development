@@ -103,6 +103,7 @@
                 "--watch",
                 ".env"
             ],
+            "envFile": "${workspaceRoot}/.env",
             "program": "src/server.js",
             "restart": true,
             "console": "internalConsole"
@@ -128,9 +129,9 @@
         {
             "name": "Module 3: Launch All",
             "configurations": [
-                "Module 3: Launch ACME FM",
                 "Module 3: Launch Backend API",
-                "Module 3: Launch BFF API"
+                "Module 3: Launch BFF API",
+                "Module 3: Launch ACME FM"
             ]
         }
     ]

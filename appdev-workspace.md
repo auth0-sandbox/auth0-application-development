@@ -18,9 +18,9 @@ If you think you missed anything, revisit
 Start with the first module, it is up to you to keep track of your progression:
 
 * [Module 1 - Application Integration with the Auth0 SDK](module01-instructions.md)
-* [Module 2 - API Access Management](module06-instructions.md)
+* [Module 2 - API Access Management](module02-instructions.md)
 * [Module 3 - Securing Tokens](module03-instructions.md)
 * [Module 4 - MFA, Passkeys, and Actions](module04-instructions.md)
 * [Module 5 - Customization](module05-instructions.md)
-* [Module 6 - Reading Logs and Handling Log Streams](module07-instructions.md)
-* [Module 7 - Selected Management API](module08-instructions.md9)
+* [Module 6 - Reading Logs and Handling Log Streams](module06-instructions.md)
+* [Module 7 - Selected Management API](module07-instructions.md9)

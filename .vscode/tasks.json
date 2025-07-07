@@ -15,6 +15,15 @@
             "runOptions": {
                 "runOn": "folderOpen"   
             }
+        },
+        {
+            "label": "Get mkcert CA root folder",
+            "type": "shell",
+            "command": "mkcert -CAROOT > '${workspaceFolder}/certificates/mkcert-ca-root.txt/'",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
         }
     ]
 }
