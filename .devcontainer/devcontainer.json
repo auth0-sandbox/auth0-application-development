@@ -2,5 +2,12 @@
     "name": "Auth0 Application Development",
     "build": {
         "dockerfile": "Dockerfile",
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "antfu.browse-lite"
+            ]
+        }
     }
 }
