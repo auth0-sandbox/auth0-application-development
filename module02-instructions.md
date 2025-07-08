@@ -114,10 +114,32 @@ It is possible to type and select multiple users in this field.
 1. Right-click the *certificates* folder at the top-level of the project and select *Open in Integrated Terminal*.
 
 1. Use *mkcert* to create a private/public key pair for the API to serve TLS (https).
-    These keys will be placed in the *certificates* folder under the project to share with modules 3 and 4:
+    These keys will be placed in the *certificates* folder under the project to share with modules 3 and 4.
+    The $ is the command prompt:
     ```bash
     $ mkcert -cert-file localhost-cert.pem -key-file localhost-cert-key.pem localhost mytestsite.localhost 127.0.0.1 ::1
     ```
+
+1. In the terminal run the following command to find the path to the PEM file for the private certificate authority:
+    ```bash
+    $ mkcert -CAROOT
+    ...
+    ```
+
+1. In the VS Code Explorer panel find the ".env" file in the project directory at the same level as all the Module XX
+    folders. Right-click on the file and choose the *Open to the Side* option.
+    ```
+    NODE_EXTRA_CA_CERTS=""
+    ```
+
+1. NodeJS must be configured to accept the certificate we are using for HTTPS in the API.
+    Put the path retrieved from mkcert in step before last as the value for this variable, and then append
+    /rootCA.pem to it.
+    ```
+    NODE_EXTRA_CA_CERTS="<path returned by mkcert -CAROOT>/rootCA.pem"
+    ```
+
+1. Close the .env file to keep it from being confused with the .env file opened in the next step.    
 
 1. In the VS Code Explorer panel find the API folder and right-click on *.env*.
 Choose the *Open to the Side* option.
@@ -170,7 +192,10 @@ If you explore this file our focus is on adding authorization; everything else h
 1. Click the run button next to the dropdown and launch the API.
 
 1. Use the *View &rarr; Open View...* menu option to open the *Debug Console*.
-The successful service start will print the URL to the service; use ctrl/cmd-click to open the landing page for the API.
+    The successful service start will print *two* URL the service is listening at.
+    The first is the public one to use for verification the service is running.
+    The second is the HTTPS URL that will be used internally by the application.
+    Use ctrl/cmd-click with the *first* link to open the landing page for the API.
 
 1. Verify that a landing page for the API is presented with documentation about its endpoints.
 Click on an endpoint detail to make sure the application returns JSON data.
@@ -269,7 +294,7 @@ Hint: go find the .env file from Module01 and copy the three values.
 
 1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*http&#x200B;://acme-fm-backend-api*".
 
-1. Set the BACKEND_URL to the local URL the API will listen on: "http&#x200B;://localhost:38500".
+1. Set the BACKEND_URL to the local URL the API will listen on: "https&#x200B;://localhost:38443".
 The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
 
 1. Save the file.
