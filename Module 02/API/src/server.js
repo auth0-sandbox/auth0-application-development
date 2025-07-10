@@ -40,11 +40,11 @@ app.get('/:userid/totals', (req, res) => {
     // Our fake data does not depend on a particular user id, but if there was a database with users
     // we would reference the variable 'userid' to get the key to find the user records.
     const total = expenses.reduce((accum, expense) => accum + expense.value, 0)
-    res.send({ total, count: expenses.length })
+    res.json({ total, count: expenses.length })
 })
 
 app.get('/:userid/reports', (req, res) => {
-    res.send(expenses)
+    res.json(expenses)
 })
 
 app.use((err, req, res, next) => {

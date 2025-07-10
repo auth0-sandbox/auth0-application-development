@@ -568,7 +568,7 @@ There is a bit more work because it is not integrated with Express, we must do t
         try {
             const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/totals`)
             const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-            res.status(200).send(await response.text())
+            res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
         }
         catch (error) {
             res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -579,7 +579,7 @@ There is a bit more work because it is not integrated with Express, we must do t
         try {
             const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/reports`)
             const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-            res.status(200).send(await response.text())
+            res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
         }
         catch (error) {
             res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -590,7 +590,7 @@ There is a bit more work because it is not integrated with Express, we must do t
         try {
             const apiUrl = new URL(`${process.env.ISSUER}userinfo`)
             const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-            res.status(200).send(await response.text())
+            res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
         }
         catch (error) {
             res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')

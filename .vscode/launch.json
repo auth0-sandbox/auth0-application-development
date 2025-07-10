@@ -116,6 +116,48 @@
             "runtimeExecutable": "vite",
             "restart": true,
             "console": "internalConsole"
+        },
+                {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 4: Launch Backend API",
+            "cwd": "${workspaceRoot}/Module 04/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 4: Launch BFF API",
+            "cwd": "${workspaceRoot}/Module 04/BFF",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "envFile": "${workspaceRoot}/.env",
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 4: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 04/Acme",
+            "runtimeExecutable": "vite",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
@@ -133,6 +175,14 @@
                 "Module 3: Launch BFF API",
                 "Module 3: Launch ACME FM"
             ]
+        },
+        {
+            "name": "Module 4: Launch All",
+            "configurations": [
+                "Module 4: Launch Backend API",
+                "Module 4: Launch BFF API",
+            ]
         }
+
     ]
 }

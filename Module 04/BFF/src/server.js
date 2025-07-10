@@ -2,6 +2,7 @@
 // Backend for Frontend API
 //
 
+import { ManagementClient } from 'auth0'
 import cors from 'cors'
 import dotenv from "dotenv"
 import express from 'express'
@@ -16,7 +17,7 @@ console.log(process.cwd())
 
 dotenv.config()
 const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8')
-const tokenManager = new TokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
+const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
 
 if (!process.env.BASE_URL) {
     process.env.BASE_URL = !process.env.CODESPACE_NAME
@@ -50,6 +51,8 @@ app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
 app.use(logger("combined"))
+app.use(express.json());       // Parses application/json
+app.use(express.urlencoded({ extended: true })); // Parses application/x-www-form-urlencoded
 
 // Allow cross-origin requests.
 app.use(cors({ origin: '*', methods: 'GET', preflightContinue: false, optionsSuccessStatus: 204 }))
@@ -79,6 +82,19 @@ app.get("/user", async (req, res) => {
         access_token: await tokenManager.getAccessToken(req.session),
         refresh_token: await tokenManager.getRefreshToken(req.session)
     })
+})
+
+app.get("/profile", async (req, res) => {
+    let profile = null
+    try {
+        const idToken = await tokenManager.getIdTokenDecoded(req.session)
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
+        const response = await managementClient.users.get({ id: idToken?.payload?.sub })
+        profile = response.data
+    }
+    catch (error) {
+    }
+    res.render('profile', { profile: profile })
 })
 
 // API endpoints begin here.
@@ -142,7 +158,7 @@ app.get('/expenses/totals', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/totals`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -153,7 +169,7 @@ app.get('/expenses/reports', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/reports`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -164,7 +180,37 @@ app.get('/acme/userinfo', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.ISSUER}userinfo`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
+    }
+    catch (error) {
+        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
+    }
+})
+
+let application = {};
+await tokenManager.requestClientAccessToken(application, process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
+
+app.get('/acme/profile', async (req, res) => {
+    try {
+        const idToken = await tokenManager.getIdTokenDecoded(req.session)
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
+        const response = await managementClient.users.get({ id: idToken?.payload?.sub })
+        res.status(200).set({ 'Content-Type': 'application/json'}).send(JSON.stringify(response.data))
+    }
+    catch (error) {
+        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
+    }
+})
+
+app.put('/acme/profile/optinmfa', async (req, res) => {
+    if (req.body?.optin_mfa !== true && req.body?.optin_mfa !== false) {
+        return res.status(400).send('Bad request')
+    }
+    try {
+        const idToken = await tokenManager.getIdTokenDecoded(req.session)
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
+        const response = await managementClient.users.update({ id: idToken?.payload?.sub }, { app_metadata: {optin_mfa: req.body.optin_mfa }})
+        res.status(204).send()
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
