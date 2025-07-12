@@ -9,14 +9,18 @@ import jwt from 'jsonwebtoken'
 import * as client from 'openid-client'
 
 class TokenManager {
-    static async getTokenManager(issuer, clientId, clientSecretOrPemKey) {
-        let tokenManager = new TokenManager()
-        if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
-            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
+    constructor(issuer, clientId, clientSecretOrPemKey) {
+        this.clientAccessTokens = {}
+        this.init(issuer, clientId, clientSecretOrPemKey)
+    }
+
+    async init(issuer, clientId, clientSecretOrPemKey) {
+         if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+            this.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
         } else {
-            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
+            this.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
         }
-        return tokenManager
+        return this
     }
 
     getAuthenticationUrl(callbackUrl, audience, requiredScopes) {
@@ -70,10 +74,15 @@ class TokenManager {
     }
 
     async getLogoutUrl(postLogoutRedirectUri, session) {
-        return client.buildEndSessionUrl(this.issuerConfig, {
-            post_logout_redirect_uri: new URL(postLogoutRedirectUri),
-            id_token_hint: await this.getIdToken(session)
-        })
+        let redirectUri = null
+        const idToken = await this.getIdToken(session)
+        if (idToken) {
+            redirectUri = client.buildEndSessionUrl(this.issuerConfig, {
+                post_logout_redirect_uri: new URL(postLogoutRedirectUri),
+                id_token_hint: idToken
+            })
+        }
+        return redirectUri
     }
 
     async fetchProtectedResource(session, url, method, body, headers) {
@@ -84,18 +93,19 @@ class TokenManager {
         return await client.fetchProtectedResource(this.issuerConfig, await this.getAccessToken(session), url, method, body, fullHeaders)
     }
 
-    async requestClientAccessToken(application, audience, scope) {
-        const tokenSet = await client.clientCredentialsGrant(this.issuerConfig, {
-            audience: audience,
-            scope: scope
-        })
-        application.accessToken = tokenSet.access_token
-        application.refreshToken = tokenSet.refresh_token
-    }
-
-    async getClientAccessToken(application) {
-        await this.checkAndRefreshTokens(application.accessToken, application)
-        return application.accessToken
+    async getClientAccessToken(audience, scope) {
+        let decoded = null
+        if (this.clientAccessTokens[audience]) {
+            decoded = jwt.decode(this.clientAccessTokens[audience], { complete: true })
+        }
+        if (!this.clientAccessTokens[audience] || Date.now() >= decoded.payload.exp * 1000) {
+            const tokenSet = await client.clientCredentialsGrant(this.issuerConfig, {
+                audience: audience,
+                scope: scope
+            })
+            this.clientAccessTokens[audience] = tokenSet.access_token
+        }
+        return this.clientAccessTokens[audience]
     }
 }
 

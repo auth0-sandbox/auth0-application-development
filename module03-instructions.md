@@ -479,32 +479,46 @@ There is a bit more work because it is not integrated with Express, we must do t
     ```
 
 1. The flip-side of login is logout, and it works the same as login.
-    Add this method to the TokenManager to return the logout URL at the authorization server.
-    It requires a callback at the BFF.
+    If the user is not currently logged in, then redirecting the authorization server for
+    logout will fail, so the following method that builds the URI
+    will return null if that happens.
+    Add this method to the TokenManager, it requires an endpoint matching the *postLogoutRedirectUri* at the BFF:
     ```js
     async getLogoutUrl(postLogoutRedirectUri, session) {
-        return client.buildEndSessionUrl(this.issuerConfig, {
-            post_logout_redirect_uri: new URL(postLogoutRedirectUri),
-            id_token_hint: await this.getIdToken(session)
-        })
+        let redirectUri = null
+        const id_token = await this.getIdToken(session)
+        if (id_token) {
+            redirectUri = client.buildEndSessionUrl(this.issuerConfig, {
+                post_logout_redirect_uri: new URL(postLogoutRedirectUri),
+                id_token_hint: id_token
+            })
+        }
+        return redirectUri
     }
     ```
 
 1. In the server.js file we need to register an endpoint the SPA can use to trigger a logout.
     In the endpoint cache the callback URL, get the redirect URL with a callback endpoint
-    in the BFF named */postlogout*, and send the user to the authorization server to logout:
+    in the BFF named */postlogout*, and send the user to the authorization server to logout.
+    The TokenManager could return null if the user is not authenticated,
+    in that case we just send the user directly back to the URI provided by the front end:
     ```js
     app.get('/acme/logout', async (req, res) => {
         if (!req.query?.post_logout_redirect_uri) {
             return res.status(400).send('Bad request')
         }
-        req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
-        res.redirect(await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session))
+        const redirectUri = await tokenManager.getLogoutUrl(req.query.post_logout_redirect_uri, req.session)
+        if (redirectUri) {
+            req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
+        } else {
+            redirectUri = post_logout_redirect_uri
+        }
+        res.redirect(redirectUri)
     })
     ```
 
 1. Register the BFF */postlogout* endpoint for the authorization server to return to.
-    In the endpoint destroy the session and redirect the user back to the SPA:
+    In the endpoint destroy the session and then redirect the user back to the SPA provided URI:
     ```js
     app.get('/postlogout', (req, res) => {
         if (!req.session.post_logout_redirect_uri) {
@@ -641,17 +655,19 @@ to launch a terminal window in that folder.
     $ npm install jose
     ```
 
-1. Run the two *openssl* commands to generate a private/public key pair:
+1. Run the two *openssl* commands to generate a private/public key pair in the project *certificates* folder:
     ```bash
-    $ openssl genrsa -out privatekey.pem 2048
-    $ openssl rsa -in privatekey.pem -pubout -out publickey.pem
+    $ openssl genrsa -out ../../certificates/privatekey.pem 2048
+    $ openssl rsa -in ../../certificates/privatekey.pem -pubout -out ../../certificates/publickey.pem
     ```
 
+1. In the *Explorer* check the *certificates* folders at the top level of the project to make sure the files were created.
+
 1. Open the "Module 03/BFF/.env" file.
-    Add these two variables to externalize the location of the key files:
+    Add these two variables to externalize the location of the key files to the project *certificates* folder:
     ```
-    PRIVATE_KEY_PATH="privatekey.pem"
-    PUBLIC_KEY_PATH="publickey.pem"
+    PRIVATE_KEY_PATH="../../certificates/privatekey.pem"
+    PUBLIC_KEY_PATH="../../certificates/publickey.pem"
     ```
 
 1. At the top of the BFF *server.js* add an import statement to get the *fs* filesystem object:

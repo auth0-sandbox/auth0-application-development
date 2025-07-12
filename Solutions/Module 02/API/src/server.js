@@ -6,6 +6,7 @@ import cors from 'cors'
 import dotenv from "dotenv"
 import express from 'express'
 import fs from 'fs'
+import https from 'https'
 import { auth, requiredScopes } from 'express-oauth2-jwt-bearer'
 import logger from 'morgan'
 import path, { dirname, normalize } from 'path'

@@ -113,8 +113,13 @@ app.get('/acme/logout', async (req, res) => {
     if (!req.query?.post_logout_redirect_uri) {
         return res.status(400).send('Bad request')
     }
-    req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
-    res.redirect(await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session))
+    const redirectUri = await tokenManager.getLogoutUrl(req.query.post_logout_redirect_uri, req.session)
+    if (redirectUri) {
+        req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
+    } else {
+        redirectUri = post_logout_redirect_uri
+    }
+    res.redirect(redirectUri)
 })
 
 app.get('/postlogout', (req, res) => {

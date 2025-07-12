@@ -72,10 +72,15 @@ class TokenManager {
     }
 
     async getLogoutUrl(postLogoutRedirectUri, session) {
-        return client.buildEndSessionUrl(this.issuerConfig, {
-            post_logout_redirect_uri: new URL(postLogoutRedirectUri),
-            id_token_hint: await this.getIdToken(session)
-        })
+        let redirectUri = null
+        const idToken = await this.getIdToken(session)
+        if (idToken) {
+            redirectUri = client.buildEndSessionUrl(this.issuerConfig, {
+                post_logout_redirect_uri: new URL(postLogoutRedirectUri),
+                id_token_hint: idToken
+            })
+        }
+        return redirectUri
     }
 
     async fetchProtectedResource(session, url, method, body, headers) {
