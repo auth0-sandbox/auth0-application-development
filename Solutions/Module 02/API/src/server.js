@@ -16,7 +16,7 @@ dotenv.config()
 
 if (!process.env.BASE_URL) {
     process.env.BASE_URL = !process.env.CODESPACE_NAME
-        ? `https://localhost:${process.env.PORT}`
+        ? `http://localhost:${process.env.PORT}`
         : `https://${process.env.CODESPACE_NAME}-${process.env.PORT}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`
 }
 
@@ -70,7 +70,7 @@ const expressOptions = {
 }
 
 https.createServer(expressOptions, app)
-    .listen(process.env.PORT_TLS, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
+    .listen(process.env.PORT_TLS, () => console.log(`Backend API started with TLS at: https://localhost:${process.env.PORT_TLS}`))
 
 const expenses = [
     {

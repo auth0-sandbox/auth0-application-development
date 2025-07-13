@@ -117,7 +117,7 @@
             "restart": true,
             "console": "internalConsole"
         },
-                {
+        {
             "type": "node",
             "request": "launch",
             "name": "Module 4: Launch Backend API",
@@ -158,6 +158,48 @@
             "runtimeExecutable": "vite",
             "restart": true,
             "console": "internalConsole"
+        },
+                {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 5: Launch Backend API",
+            "cwd": "${workspaceRoot}/Module 05/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 5: Launch BFF API",
+            "cwd": "${workspaceRoot}/Module 05/BFF",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "envFile": "${workspaceRoot}/.env",
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 5: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 05/Acme",
+            "runtimeExecutable": "vite",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
@@ -183,7 +225,14 @@
                 "Module 4: Launch BFF API",
                 "Module 4: Launch ACME FM"
             ]
+        },
+        {
+            "name": "Module 5: Launch All",
+            "configurations": [
+                "Module 5: Launch Backend API",
+                "Module 5: Launch BFF API",
+                "Module 5: Launch ACME FM"
+            ]
         }
-
     ]
 }

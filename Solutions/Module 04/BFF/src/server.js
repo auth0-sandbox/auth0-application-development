@@ -51,8 +51,6 @@ app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
 app.use(logger("combined"))
-app.use(express.json());       // Parses application/json
-app.use(express.urlencoded({ extended: true })); // Parses application/x-www-form-urlencoded
 
 // Allow cross-origin requests.
 app.use(cors({ origin: '*', methods: 'GET', preflightContinue: false, optionsSuccessStatus: 204 }))
@@ -82,19 +80,6 @@ app.get("/user", async (req, res) => {
         access_token: await tokenManager.getAccessToken(req.session),
         refresh_token: await tokenManager.getRefreshToken(req.session)
     })
-})
-
-app.get("/profile", async (req, res) => {
-    let profile = null
-    try {
-        const idToken = await tokenManager.getIdTokenDecoded(req.session)
-        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
-        const response = await managementClient.users.get({ id: idToken?.payload?.sub })
-        profile = response.data
-    }
-    catch (error) {
-    }
-    res.render('profile', { profile: profile })
 })
 
 // API endpoints begin here.
@@ -129,7 +114,7 @@ app.get('/acme/logout', async (req, res) => {
     if (!req.query?.post_logout_redirect_uri) {
         return res.status(400).send('Bad request')
     }
-    const redirectUri = await tokenManager.getLogoutUrl(req.query.post_logout_redirect_uri, req.session)
+    const redirectUri = await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session)
     if (redirectUri) {
         req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
     } else {
@@ -163,7 +148,7 @@ app.get('/expenses/totals', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/totals`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -174,7 +159,7 @@ app.get('/expenses/reports', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/reports`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
@@ -185,20 +170,18 @@ app.get('/acme/userinfo', async (req, res) => {
     try {
         const apiUrl = new URL(`${process.env.ISSUER}userinfo`)
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json'}).send(await response.text())
+        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
     catch (error) {
         res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
     }
 })
 
-let application = {};
-await tokenManager.requestClientAccessToken(application, process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
-
 app.get('/acme/profile', async (req, res) => {
     try {
+        const managementApiToken = await tokenManager.getClientAccessToken(process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
         const idToken = await tokenManager.getIdTokenDecoded(req.session)
-        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: managementApiToken })
         const response = await managementClient.users.get({ id: idToken?.payload?.sub })
         res.status(200).set({ 'Content-Type': 'application/json'}).send(JSON.stringify(response.data))
     }
@@ -212,9 +195,10 @@ app.put('/acme/profile/optinmfa', async (req, res) => {
         return res.status(400).send('Bad request')
     }
     try {
+        const managementApiToken = await tokenManager.getClientAccessToken(process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
         const idToken = await tokenManager.getIdTokenDecoded(req.session)
-        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: await tokenManager.getClientAccessToken(application)})
-        const response = await managementClient.users.update({ id: idToken?.payload?.sub }, { app_metadata: {optin_mfa: req.body.optin_mfa }})
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: managementApiToken })
+        await managementClient.users.update({ id: idToken?.payload?.sub }, { app_metadata: {optin_mfa: req.body.optin_mfa }})
         res.status(204).send()
     }
     catch (error) {

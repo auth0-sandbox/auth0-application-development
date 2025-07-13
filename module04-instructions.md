@@ -1,6 +1,6 @@
 ![Lab Banner](./.assets/images/application-development-banner.png)
 
-# Lab 4: Managment API
+# Lab 4: Management API
 
 [**Table of Contents**](./appdev-workspace.md)
 

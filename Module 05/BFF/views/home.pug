@@ -1,0 +1,63 @@
+extends layout
+
+block content
+    .content
+        h1 Acme FM Backend for Frontend API
+        p
+            | The purpose of the backend-for-frontend (BFF) is to two-fold.
+            | The first goal is provide the client with exactly the data and functionality
+            | it needs.
+            | This removes extra work in the client to filter the data it receives for the presentation,
+            | and moves that processing into the BFF.
+            | To this end the BFF is tightly coupled with the client to understand exactly what it requires.
+
+        p
+            | The second goal is to enanche security to the APIs by not reducing the exposure of backend API access tokens.
+
+        h2 Security
+        p
+            | The BFF API is a proxy API between a public client and a backend API.
+            | This API is protected by a session.
+            | A single-page or native application may redirect the user to the /login endpoint, which establishes the session.
+            | The BFF redirects the user for authorization at the identity provider, the same as a web application would.
+            | The ID token and the backend API access token are provided to the BFF, the same as if it were a
+            | web application.
+            | The BFF manages and uses these tokens, they do not go to the client application.
+            | The client makes API calls to this BFF with the session cookie, which identifies the user that signed on
+            | via /login with that cookie.
+            | The BFF proxies those calls to the
+            | backend API using the tokens issued during the user authentication.
+        p
+            | This mitigates the risk of tokens being exposed by a public application, they are never there.
+            | It also mitigates the risk of a counterfiet public application; a counterfiet can only make the same calls
+            | the legitimate public application can make.
+            | The only risk that remains is the authorization code passing through the user browser, but that is mitigated
+            | here by requiring a secret or Private Key JWT for the BFF to authenticate and exchange the code.
+
+        h2 Permissions
+        p
+            The BFF requests the read:totals and read:reports permissions during authentication to make thebackend API calls.
+
+        h2 API Endpoints
+        ul 
+            li GET / - Displays this page
+            li
+                | GET #[a(href=`/acme/login?redirect_uri=/user`) /acme/login]
+                | - The user initiates BFF login; the redirect_uri query parameter is where to return.
+                | The BFF returns two query parameters: name and picture.
+                | No return on authentication failure.
+            li
+                | GET #[a(href=`/acme/logout?post_logout_redirect_uri=/`) /acme/logout]
+                | - The user initiates BFF logout; the redirect_uri query parameter is where to return.            
+            li GET #[a(href="/expenses/totals") /acme/totals] - Returns the total amount of expenses.
+            li GET #[a(href="/expenses/reports") /acme/reports] - Returns all expenses (requires read:reports permission).
+            li GET #[a(href="/acme/userinfo") /acme/userinfo] - Returns the user information from the Auth0 Authentication API.
+            li GET #[a(href="/acme/profile") /acme/profile] - Returns the user profile from the Auth0 Management API.
+        h2 Information Endpoints 
+        ul 
+            li
+                | GET #[a(href="/publickey.pem") /publickey.pem]
+                | - Returns the public key for private key JWT signing if the key exists.
+                | Use openssl to create the private and public PEM key files.
+            li GET #[a(href="/user") /user] - Displays the /userinfo information about the user for the current session.
+            li GET #[a(href="/profile") /profile] - Displays the user profile for the current session.

@@ -10,17 +10,15 @@ import * as client from 'openid-client'
 
 class TokenManager {
     constructor(issuer, clientId, clientSecretOrPemKey) {
-        this.clientAccessTokens = {}
         this.init(issuer, clientId, clientSecretOrPemKey)
     }
 
     async init(issuer, clientId, clientSecretOrPemKey) {
-         if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+        if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
             this.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
         } else {
             this.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
         }
-        return this
     }
 
     getAuthenticationUrl(callbackUrl, audience, requiredScopes) {
@@ -91,21 +89,6 @@ class TokenManager {
         }
         const fullHeaders = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json', ...headers })
         return await client.fetchProtectedResource(this.issuerConfig, await this.getAccessToken(session), url, method, body, fullHeaders)
-    }
-
-    async getClientAccessToken(audience, scope) {
-        let decoded = null
-        if (this.clientAccessTokens[audience]) {
-            decoded = jwt.decode(this.clientAccessTokens[audience], { complete: true })
-        }
-        if (!this.clientAccessTokens[audience] || Date.now() >= decoded.payload.exp * 1000) {
-            const tokenSet = await client.clientCredentialsGrant(this.issuerConfig, {
-                audience: audience,
-                scope: scope
-            })
-            this.clientAccessTokens[audience] = tokenSet.access_token
-        }
-        return this.clientAccessTokens[audience]
     }
 }
 
