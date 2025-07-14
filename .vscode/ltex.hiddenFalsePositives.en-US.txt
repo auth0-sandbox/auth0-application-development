@@ -64,3 +64,10 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFor SPAs this is not so secure; the code verifier has to be held in browser local storage while the user goes to other pages in the flow.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFor DPoP applications DPoP is uses a signature We are not going to implement DPoP\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFor DPoP applications DPoP is uses a signature We are not going to implement DPoP\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe goal is the add a page to the front-end application that retrieves the full user profile from the management API, and offers a checkbox that changes the value of the user app_metadata.optin_mfa property at Auth0.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qapp_metadata may not be altered with user privileges, it must be handled with an M2M client.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe clientAccessTokens property referenced by the method must be created in the constructor, so add this statement to the constructor:\\E$"}
+{"rule":"EN_COMPOUNDS","sentence":"^\\QSecond, get the authenticated user ID token to retrieve the sub claim, the user ID at Auth0.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QEverything worked up to this point, but there will be an issue if the getClientAccessToken is used at the top level of server.js before the main thread is released.\\E$"}
+{"rule":"A_INFINITIVE","sentence":"^\\QThe await makes sure the issuer has been set in the TokenManager before the program continues.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QNow if getClientToken is used at the top-level of the program the issuer it needs is available.\\E$"}

@@ -36,7 +36,44 @@ This page and required functionality has already been added to the Acme front-en
 
 <div style="text-align: center"><img src="./.assets/images/application-profile-page.png" /></div>
 
-## Part 1: Change the BFF to act as a machine-to-machine (M2M) application
+## Part 1: Link the application integration to the Management API
+
+1. In the Auth0 tenant locate the settings for the *ACME Financial Management* application:
+    *Applications &rarr; Applications, Acme Financial Management, Settings*.
+
+1. Scroll down the page and click *Advanced Settings*.
+    Select *Client Credentials* if it is not already selected, and click the *Save* button at
+    the bottom of the page:
+
+    <div style="text-align: center"><img src="./.assets/images/auth0-app-client-credentials.png" /></div>
+
+    This enables the BFF to use one client ID to both act on the user's behalf and get an access token
+    for the backend API, and act on its own behalf and get an M2M client token for APIs it uses.
+    In this case that will be the Auth0 Management API.
+
+    The BFF could use a different application configuration for this hybrid scenario.
+    Separating access would increase the work in the BFF to juggle separate client credentials,
+    and as this is all handled in a "confidential client" in a controlled server environment
+    the security gain is negligible.    
+
+1. At the top of the page move from *Settings* to *APIs* and enable the *Auth0 Management API*:
+
+    <div style="text-align: center"><img src="./.assets/images/auth0-app-enable-mapi.png" /></div>
+
+    This section of the application integration is only used for APIs the application will establish
+    a machine-to-machine connection with on its own behalf.
+    It has no bearing on issuing access tokens to act on the user's behalf through the Authorization Code
+    Grant flow.
+
+1. Expand the *Auth0 Management API* section with the dropdown button at the right.
+    The Management API has a significant number of permissions defined.
+    Use the *Filter Permissions* search box to find and enable *read:users*, *update:users*, and
+    *update:users_app_metadata*.
+    Click the *Update* button when these are selected:
+
+    <div style="text-align: center"><img src="./.assets/images/auth0-app-mapi-permissions.png" /></div>
+
+## Part 2: Change the BFF to act as a machine-to-machine (M2M) application
 
 The first change to the BFF is to add a method in TokenManager to request M2M access tokens.
 The refresh process for an M2M token is different; when a token expires simply request a new one.
@@ -104,7 +141,7 @@ The refresh process for an M2M token is different; when a token expires simply r
     Third, use the Auth0 NodeJS library to create a ManagementClient instance and then use the client to ask the
     management API for the user profile and return it.
 
-1. Oh oh, right-click on "Module 04/BFF" and open a terminal window at that folder, and add the Auth0 library to the BFF:
+1. Right-click on "Module 04/BFF" and open a terminal window at that folder, and add the Auth0 library to the BFF:
     ```bash
     $ npm install auth0
     ```
@@ -136,7 +173,7 @@ The refresh process for an M2M token is different; when a token expires simply r
 
 1. Terminate all three applications in Run/Debug.
 
-## Part 2: Modify the user app_metadata at Auth0
+## Part 3: Modify the user app_metadata at Auth0
 
 Now to implement changing the *app_metadata* for the user.
 
@@ -171,7 +208,7 @@ Now to implement changing the *app_metadata* for the user.
 
 1. Terminate all three applications in Run/Debug.
 
-## Part 3: A word about asynchronous tming
+## Part 4: A word about asynchronous timing
 
 Everything worked up to this point, but there will be an issue if the getClientAccessToken is used at the top level of server.js
 before the main thread is released.
@@ -182,7 +219,7 @@ Top-level awaits do work in server.js, so the order of things needs to be shuffl
 
 1. In OpenidClientTokenManager.js locate the constructor.
 
-1. Remove the parameters, and the call to init:
+1. Remove the parameters, and the call to *init*:
     ```js
     constructor () {
         this.clientAccessTokens = {}
@@ -211,7 +248,7 @@ Top-level awaits do work in server.js, so the order of things needs to be shuffl
     const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
     ```
 
-    The await makes sure the issuer has been set in the TokenManager before the program continues.
+    The *await* makes sure the issuer has been set in the TokenManager before the program continues.
     Now if *getClientToken* is used at the top-level of the program the issuer it needs is available.
 
 

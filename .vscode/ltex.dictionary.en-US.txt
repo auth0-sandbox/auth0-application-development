@@ -13,3 +13,15 @@ accessToken
 PKCE
 Destructuring
 destructuring
+pem
+https
+privatekey
+publickey
+optin
+mfa
+TokenManager
+async
+vite
+ManagementClient
+getTokenManager
+init
