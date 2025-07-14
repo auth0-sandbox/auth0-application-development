@@ -48,7 +48,7 @@ if (!route.query.name) {
     <div v-if="waiting">
         <p>Loading...</p>
         <div class="centered-image-container">
-            <img class="spinner" src="../assets/images/spinner.gif" alt="Loading..." />
+            <img class="spinner" src="@/assets/images/spinner.gif" alt="Loading..." />
         </div>
     </div>
     <div v-if="user && user.name">

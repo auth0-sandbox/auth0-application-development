@@ -188,3 +188,23 @@ li.spacer {
     height: 40px;
     border-radius: 20px;
 }
+
+span.link {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    margin: 0 20px;
+}
+
+.centered-image-container {
+    position: fixed; /* Positions the element relative to the viewport, keeping it fixed on scroll */
+    top: 50%; /* Places the top edge of the div at the vertical center of the viewport */
+    left: 50%; /* Places the left edge of the div at the horizontal center of the viewport */
+    transform: translate(-50%, -50%); /* Adjusts the element's position by 50% of its own width and height to truly center it */
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}

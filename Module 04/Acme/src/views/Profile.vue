@@ -1,24 +1,34 @@
 <script setup>
 import { reactive } from 'vue'
-import { getProfile, login, setProfileOptInMfa, user } from '../services/index.js'
+import { getProfile, login, resetProfileMfa, setProfileOptInMfa, user } from '../services/index.js'
 
-var profile = null
+let waiting = true
+let profile = null
 
-try {
-    profile = await getProfile()
-} catch (error) {
-    if (error == 401) {
-        login('/profile')
+if (user && user.name) {
+    try {
+        profile = await getProfile()
+    } catch (error) {
+        // User status resets in server.js to prevent a loop if not signed in
+    } finally {
+        waiting = false
     }
+} else {
+    waiting = false
 }
 </script>
 
 <template>
-    <div v-if="user && user.name">
-        <h1>User Profile from Auth0</h1>
-        <div>
-            <p>Hello <a href="/userinfo">{{ user.name }}</a>,</p>
+    <h1>User Profile from Auth0</h1>
+    <div>
+        <p>Hello <span v-if="user && user.name"><a href="/userinfo">{{ user.name }}</a></span><span v-else>{{ 'Anonymous' }}</span>,</p>
+    </div>
+    <div v-if="waiting">
+        <div class="centered-image-container">
+            <img class="spinner" src="@/assets/images/spinner.gif" alt="Loading..." />
         </div>
+    </div>
+    <div v-if="user && user.name">
         <div v-if="profile == null">
             <p>Internal error retreiving user information</p>
         </div>
@@ -29,5 +39,8 @@ try {
 {{ JSON.stringify(profile, null, 4) }}
 </pre>
         </div>
+    </div>
+    <div v-else>
+        <p>Please sign on to see your Auth0 profile.</p>
     </div>
 </template>

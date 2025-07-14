@@ -1,5 +1,8 @@
 <script setup>
-import { user } from './services/index.js'
+import { useRoute } from 'vue-router'
+import { login, logout, user } from './services/index.js'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -8,22 +11,22 @@ import { user } from './services/index.js'
             <ul class="navigation">
                 <li class="logo">
                     <a href="/">
-                        <img src="./assets/images/acme-financial-management.png" alt="ACME Financial Management Logo" />
+                        <img src="@/assets/images/acme-financial-management.png" alt="ACME Financial Management Logo" />
                     </a>
                 </li>
                 <li><router-link to="/">Home</router-link></li>
                 <li><router-link to="/reports">Expenses</router-link></li>
-                <li><router-link to="/profile">Profile</router-link></li>
                 <li><router-link to="/userinfo">Userinfo</router-link></li>
+                <li><router-link to="/profile">Profile</router-link></li>
                 <li class="spacer"></li>
                 <template v-if="user && user.name">
-                    <li><router-link to="/logout">Logout</router-link></li>
+                    <li><span class="link" @click="logout()">Logout</span></li>
                     <li class="profile"><router-link to="/userinfo"><img :src="user.picture"
                                 alt="Profile Picture" /></router-link></li>
                 </template>
                 <template v-else>
-                    <li><router-link to="/login">Login</router-link></li>
-                    <li class="profile"><img src="./assets/images/profile.png" alt="Profile Picture" /></li>
+                    <li><span class="link" @click="login(route.path)">Login</span></li>
+                    <li class="profile"><img src="@/assets/images/profile.png" alt="Profile Picture" /></li>
                 </template>
             </ul>
         </nav>
@@ -31,7 +34,7 @@ import { user } from './services/index.js'
 
     <main class="content">
         <Suspense>
-            <router-view />
+            <router-view :key="$route.fullPath" />
         </Suspense>
     </main>
 </template>

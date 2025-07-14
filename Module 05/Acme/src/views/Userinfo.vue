@@ -24,7 +24,7 @@ if (user && user.name) {
     </div>
     <div v-if="waiting">
         <div class="centered-image-container">
-            <img class="spinner" src="../assets/images/spinner.gif" alt="Loading..." />
+            <img class="spinner" src="@/assets/images/spinner.gif" alt="Loading..." />
         </div>
     </div>
     <div v-if="user && user.name">

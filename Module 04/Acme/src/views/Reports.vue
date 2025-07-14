@@ -1,24 +1,33 @@
 <script setup>
-import { reactive } from 'vue'
 import { getReports, login, user } from '../services/index.js'
-var expenses = null;
 
-try {
-    expenses = await getReports()
-} catch (error) {
-    console.log('Error retrieving expenses:', error)
-    if (error == 401) {
-        login('/reports')
+let waiting = true
+let expenses = null
+
+if (user && user.name) {
+    try {
+        expenses = await getReports()
+    } catch (error) {
+        // User status resets in server.js to prevent a loop if not signed in
+    } finally {
+        waiting = false
     }
+} else {
+    waiting = false
 }
 </script>
 
 <template>
-    <div v-if="user && user.name">
-        <h1>Expense Report</h1>
-        <div>
-            <p>Hello <a href="/userinfo">{{ user.name }}</a>,</p>
+    <h1>Expense Report</h1>
+    <div>
+        <p>Hello <span v-if="user && user.name"><a href="/userinfo">{{ user.name }}</a></span><span v-else>{{ 'Anonymous' }}</span>,</p>
+    </div>
+    <div v-if="waiting">
+        <div class="centered-image-container">
+            <img class="spinner" src="@/assets/images/spinner.gif" alt="Loading..." />
         </div>
+    </div>
+    <div v-if="user && user.name">
         <div v-if="expenses == null">
             <p>Internal error retreiving expenses</p>
         </div>
@@ -45,5 +54,8 @@ try {
             </table>
             <p>Don't spend too much.</p>
         </div>
+    </div>
+    <div v-else>
+        <p>Please sign on to see your expense report.</p>
     </div>
 </template>
