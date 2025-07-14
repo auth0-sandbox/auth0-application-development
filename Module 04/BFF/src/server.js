@@ -145,7 +145,7 @@ app.get('/postlogout', (req, res) => {
 
 app.get('/expenses/totals', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/totals`)
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/totals`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
@@ -156,7 +156,7 @@ app.get('/expenses/totals', async (req, res) => {
 
 app.get('/expenses/reports', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/reports`)
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/reports`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
@@ -167,7 +167,7 @@ app.get('/expenses/reports', async (req, res) => {
 
 app.get('/acme/userinfo', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.ISSUER}userinfo`)
+        const apiUrl = `${process.env.ISSUER}userinfo`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }

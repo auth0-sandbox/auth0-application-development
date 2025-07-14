@@ -169,7 +169,7 @@ app.get('/expenses/reports', async (req, res) => {
 })
 
 app.get('/acme/userinfo', async (req, res) => {
-    try {
+    try {x
         const apiUrl = `${process.env.ISSUER}userinfo`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
