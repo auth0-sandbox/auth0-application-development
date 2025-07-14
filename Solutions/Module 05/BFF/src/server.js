@@ -208,6 +208,19 @@ app.patch('/acme/profile/optinmfa', async (req, res) => {
     }
 })
 
+app.delete('/acme/profile/resetmfa', async (req, res) => {
+    try {
+        const managementApiToken = await tokenManager.getClientAccessToken(process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
+        const idToken = await tokenManager.getIdTokenDecoded(req.session)
+        const managementClient = new ManagementClient({ domain: process.env.DOMAIN, token: managementApiToken })
+        const response = await managementClient.users.deleteAllAuthenticators({ id: idToken?.payload?.sub })
+        res.status(204).send()
+    }
+    catch (error) {
+        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
+    }
+})
+
 app.use((err, req, res, next) => {
     res.status(err.status || 500)
     res.json({ status: err.status, message: err.message })

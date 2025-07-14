@@ -21,6 +21,6 @@ Start with the first module, it is up to you to keep track of your progression:
 * [Module 2 - API Access Management](module02-instructions.md)
 * [Module 3 - Securing Tokens](module03-instructions.md)
 * [Module 4 - Management API](module04-instructions.md9)
-* [Module 5 - Actions for MFA](module05-instructions.md)
-* [Module 6 - Customization](module06-instructions.md)
-* [Module 7 - Consuming Log Streams](module07-instructions.md)
+* [Module 5 - Triggers and Actions (and MFA)](module05-instructions.md)
+<!--* [Module 6 - Customization](module06-instructions.md)-->
+<!--* [Module 7 - Consuming Log Streams](module07-instructions.md)-->
