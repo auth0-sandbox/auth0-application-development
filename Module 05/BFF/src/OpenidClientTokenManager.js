@@ -10,7 +10,6 @@ import * as client from 'openid-client'
 
 class TokenManager {
     constructor(issuer, clientId, clientSecretOrPemKey) {
-        this.init(issuer, clientId, clientSecretOrPemKey)
         this.clientAccessTokens = {}
     }
     
@@ -91,7 +90,7 @@ class TokenManager {
             throw 401
         }
         const fullHeaders = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json', ...headers })
-        return await client.fetchProtectedResource(this.issuerConfig, await this.getAccessToken(session), url, method, body, fullHeaders)
+        return await client.fetchProtectedResource(this.issuerConfig, await this.getAccessToken(session), new URL(url), method, body, fullHeaders)
     }
 
     async getClientAccessToken(audience, scope) {

@@ -51,6 +51,8 @@ app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
 app.use(logger("combined"))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // Allow cross-origin requests.
 app.use(cors({ origin: '*', methods: 'GET', preflightContinue: false, optionsSuccessStatus: 204 }))
@@ -114,11 +116,11 @@ app.get('/acme/logout', async (req, res) => {
     if (!req.query?.post_logout_redirect_uri) {
         return res.status(400).send('Bad request')
     }
-    const redirectUri = await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session)
+    let redirectUri = await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session)
     if (redirectUri) {
         req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
     } else {
-        redirectUri = post_logout_redirect_uri
+        redirectUri = req.query.post_logout_redirect_uri
     }
     res.redirect(redirectUri)
 })
@@ -146,7 +148,7 @@ app.get('/postlogout', (req, res) => {
 
 app.get('/expenses/totals', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/totals`)
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/totals`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
@@ -157,7 +159,7 @@ app.get('/expenses/totals', async (req, res) => {
 
 app.get('/expenses/reports', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.sub}/reports`)
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/reports`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
@@ -168,7 +170,7 @@ app.get('/expenses/reports', async (req, res) => {
 
 app.get('/acme/userinfo', async (req, res) => {
     try {
-        const apiUrl = new URL(`${process.env.ISSUER}userinfo`)
+        const apiUrl = `${process.env.ISSUER}userinfo`
         const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
         res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
     }
@@ -190,7 +192,7 @@ app.get('/acme/profile', async (req, res) => {
     }
 })
 
-app.put('/acme/profile/optinmfa', async (req, res) => {
+app.patch('/acme/profile/optinmfa', async (req, res) => {
     if (req.body?.optin_mfa !== true && req.body?.optin_mfa !== false) {
         return res.status(400).send('Bad request')
     }
@@ -206,7 +208,7 @@ app.put('/acme/profile/optinmfa', async (req, res) => {
     }
 })
 
-app.put('/acme/profile/resetmfa', async (req, res) => {
+app.delete('/acme/profile/resetmfa', async (req, res) => {
     try {
         const managementApiToken = await tokenManager.getClientAccessToken(process.env.MANAGEMENT_API_AUDIENCE, process.env.MANAGEMENT_API_SCOPE)
         const idToken = await tokenManager.getIdTokenDecoded(req.session)

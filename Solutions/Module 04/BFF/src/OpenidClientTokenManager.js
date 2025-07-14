@@ -10,7 +10,6 @@ import * as client from 'openid-client'
 
 class TokenManager {
     constructor(issuer, clientId, clientSecretOrPemKey) {
-        this.init(issuer, clientId, clientSecretOrPemKey)
         this.clientAccessTokens = {}
     }
     

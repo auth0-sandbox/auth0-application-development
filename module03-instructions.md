@@ -281,7 +281,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     ISSUER=""
     CLIENT_ID=""
     CLIENT_SECRET=""
-    BACKEND_AUDIENCE="http://acme-fm-backend-api"
+    BACKEND_AUDIENCE="https://acme-fm-backend-api"
     BACKEND_SCOPE="read:totals read:reports"
     BACKEND_URL="https://localhost:38500"
     SECRET="a long, randomly-generated string stored in env"

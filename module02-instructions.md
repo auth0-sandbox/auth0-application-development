@@ -36,7 +36,7 @@ The only actions the application is looking for right now are the *totals* and *
 
 1. Click the *+ Create API* button to create a new API integration.
 
-1. Name the new API *ACME FM Backend API*, and set the identifier to http://acme-fm-backend-api.
+1. Name the new API *ACME FM Backend API*, and set the identifier to https://acme-fm-backend-api.
 The identifier may be any string, often it is the public URL of the API.
 This is also known as the "audience" in the application and the API itself.
 
@@ -70,6 +70,13 @@ and click the *+ Add* button:
 
 1. Fill in a second permission as *read:reports* and a description of *Read expense reports*, and
 click the *+ Add* button.
+
+1. NOTE: When you look under *Applications &rarr; Applications* some Auth0 tenants may automatically
+    create an M2M test application with the same
+    name as the API; this will be ignored in the labs.
+    It may be safely deleted if you choose to:
+
+    <div style="text-align: center;"><img src="./.assets/images/auth0-api-automatic-m2m.png" /></div>
 
 ## Part 3: Use Role-based Access Control (RBAC) to allow user access
 
@@ -233,23 +240,23 @@ the Auth0 middleware to require the access token by inserting this code:
     ```
 
 1. We need to set the scopes for each of the endpoints.
-Locate the /totals endpoint beginning with *app.get('/:userid/totals'...*:
+Locate the /totals endpoint beginning with *app.get('/expenses/:userid/totals'...*:
 
     ```js
-    app.get('/:userid/totals', (req, res) => {
+    app.get('/expenses/:userid/totals', (req, res) => {
     ```
 
 1. Change the opening line of the registration by adding *RequiredScopes(),* as the second
 argument to *app.get*:
 
     ```js
-    app.get('/:userid/totals', requiredScopes('read:totals'), (req, res) => {
+    app.get('/expenses/:userid/totals', requiredScopes('read:totals'), (req, res) => {
     ```
 
-1. Do the same for the /reports endpoint beginning with *app.get('/:userid/reports'...*:
+1. Do the same for the /reports endpoint beginning with *app.get('/expenses/:userid/reports'...*:
 
     ```js
-    app.get('/:userid/reports', requiredScopes('read:reports'), (req, res) => {
+    app.get('/expenses/:userid/reports', requiredScopes('read:reports'), (req, res) => {
     ```
 
 1. Make sure the file is saved, and *nodemon* should restart the service automatically.

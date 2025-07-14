@@ -26,8 +26,15 @@ all customers to use MFA, or allow customers to opt-in if they want it.
 
 1. Set the environment variables for "Module 05/BFF/.env"
 
-## Part 2: Establish an M2M application for actions
-## Part 3: Enroll or check MFA
+1. Add the delete:guardianauthenticators (check) permission for the app
+
+## Part 2: Enroll or check MFA
+
+1. Go to actions
+
+1. Start with empty action
+
+1. 
 
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
