@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    .content
+        h1 Acme FM Backend for Frontend API
+        h2 Current User Profile
+        if profile
+            pre
+                | #{JSON.stringify(profile, null, 4)}

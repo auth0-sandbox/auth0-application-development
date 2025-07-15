@@ -159,7 +159,7 @@
             "restart": true,
             "console": "internalConsole"
         },
-                {
+        {
             "type": "node",
             "request": "launch",
             "name": "Module 5: Launch Backend API",
@@ -200,6 +200,48 @@
             "runtimeExecutable": "vite",
             "restart": true,
             "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 6: Launch Backend API",
+            "cwd": "${workspaceRoot}/Module 06/API",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 6: Launch BFF API",
+            "cwd": "${workspaceRoot}/Module 06/BFF",
+            "runtimeExecutable": "nodemon",
+            "runtimeArgs": [
+                "--watch",
+                ".",
+                "--watch",
+                ".env"
+            ],
+            "envFile": "${workspaceRoot}/.env",
+            "program": "src/server.js",
+            "restart": true,
+            "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 6: Launch ACME FM",
+            "cwd": "${workspaceRoot}/Module 06/Acme",
+            "runtimeExecutable": "vite",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
@@ -232,6 +274,14 @@
                 "Module 5: Launch Backend API",
                 "Module 5: Launch BFF API",
                 "Module 5: Launch ACME FM"
+            ]
+        },
+        {
+            "name": "Module 6: Launch All",
+            "configurations": [
+                "Module 6: Launch Backend API",
+                "Module 6: Launch BFF API",
+                "Module 6: Launch ACME FM"
             ]
         }
     ]

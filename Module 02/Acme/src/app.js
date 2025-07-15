@@ -79,7 +79,7 @@ app.get("/", async (req, res) => {
     let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
     if (locals.user) {
         try {
-            const apiUrl = `${process.env.BACKEND_URL}/${locals.user.sub}/totals`
+            const apiUrl = `${process.env.BACKEND_URL}/expenses/${locals.user.sub}/totals`
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ app.get("/user", requiresAuth(), async (req, res) => {
 app.get("/expenses", requiresAuth(), async (req, res, next) => {
     let expenses = []
     try {
-        const apiUrl = `${process.env.BACKEND_URL}/${req.oidc.user.sub}/reports`
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${req.oidc.user.sub}/reports`
         const config = {
             headers: {
                 'Content-Type': 'application/json',
