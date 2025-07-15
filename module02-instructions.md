@@ -133,8 +133,10 @@ It is possible to type and select multiple users in this field.
     ...
     ```
 
-1. In the VS Code Explorer panel find the ".env" file in the project directory at the same level as all the Module XX
-    folders. Right-click on the file and choose the *Open to the Side* option.
+1. In the VS Code Explorer panel find the ".env" file in the top-level directory,
+    at the same level as "Module 01", "Module 03", etc.
+    It will be located after the *Solutions* folder.
+    Right-click on the file and choose the *Open to the Side* option.
     ```
     NODE_EXTRA_CA_CERTS=""
     ```
@@ -161,7 +163,7 @@ choose the *ACME Financial Management* application.
 
 1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
 
-1. Set the *ISSUER* to the URL of your Auth0 tenant: *https&#x200B;://\<your domain>.\<your region>.auth0.com/*.
+1. Set the *ISSUER* to the URL of your Auth0 tenant: *https://\<your domain>.\<your region>.auth0.com/*.
 That happens to be the first part of the JWKS_URI value, up to and including
 the / in front of the path part of the URL, so you can get it from there.
 Make sure the trailing slash is present, because the access token *iss* claim will have it and the
@@ -303,9 +305,9 @@ and then in the Explorer panel double-click the *Module 02/Acme/.env file to ope
 1. Set the *CLIENT_ID, CLIENT_SECRET,* and *ISSUER_BASE_URL* as we did in Module 01.
 Hint: go find the .env file from Module01 and copy the three values.
 
-1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*https&#x200B;://acme-fm-backend-api*".
+1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*https://acme-fm-backend-api*".
 
-1. Set the BACKEND_URL to the local URL the API will listen on: "https&#x200B;://localhost:38443".
+1. Set the BACKEND_URL to the local URL the API will listen on: "https://localhost:38443".
 The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
 
 1. Save and close the .env file.

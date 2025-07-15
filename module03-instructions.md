@@ -70,7 +70,7 @@ In step five the application has to handle
 redirecting the user to the BFF application endpoint for the user to sign on,
 In step six the API requests to the BFF are authorized with a session cookie, not a token:
 
-1. Open the "Module 03/Acme/src/main.js" file.
+1. Right-click the "Module 03/Acme/src/main.js" file and open it to the side.
 This JavaScript file is what kicks the application off; it loads a router component and the main "App"
 component, and tells vue to render it over the Document Object Model (DOM) entity with the ID "app".
     ```js
@@ -93,7 +93,8 @@ Open the "src/router/index.js" file to see the components displayed for differen
     ]
     ```
 
-1. The *Home* component (src/views/Home.vue) is the default view.
+1. Open the "Module 03/Acme/src/views/HomeVue.vue" file.
+The Home component is the landing page.
 The component has a *\<script setup>* that executes when the component first loads.
 The *\<template>* is the HTML the component will display, with Vue conditional attributes in the tags:
     ```html
