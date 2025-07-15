@@ -89,9 +89,11 @@ app.get("/", async (req, res) => {
             const response = await fetch(apiUrl, config)
             if (response.ok) {
                 locals = { ...locals, ...await response.json()}
+            } else {
+                throw new Error(`Error fetching totals: ${response.statusText}`)
             }
-        }
-        catch (error) {
+        } catch (error) {
+            console.error(error)
         }
     }
     res.render("home", locals)
@@ -117,9 +119,11 @@ app.get("/expenses", requiresAuth(), async (req, res, next) => {
             }
         }
         const response = await fetch(apiUrl, config)
+        if (!response.ok) {
+            throw new Error(`Error fetching expenses: ${response.statusText}`)
+        }   
         expenses = await response.json()
-    }
-    catch (error) {
+    } catch (error) {
         expenses = null
     }
     res.render("expenses", {

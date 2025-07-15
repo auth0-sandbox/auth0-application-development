@@ -4,33 +4,19 @@
 
 [**Table of Contents**](./appdev-workspace.md)
 
+## Dependencies
+
+* The Auth0 ACME Financial Management application configuration from Module 01
+* If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 application configuration
+
 ## Synopsis
 
-Now the project is extended to leverage a backend API to get the expenses (and totals).
-The API needs to be protected so that only authorized users may access it.
+The application will be divided into a user-interface front-end, and a backend API
+that provides the business logic for expenses.
+Access to the backend will be secured with an OAuth2 access token issued to the front-end application
+on behalf of the authenticated user.
 
-1. Define the backend permissions and map out user access.
-1. Set up the backend API configuration at Auth0.
-1. Secure the API with access tokens.
-1. Obtain and use access tokens in the application.
-
-## Part 1: Define the Acme Backend API and Permissions
-
-Juggling permissions is a three-way negotiation between the API, the identity provider, and
-the application.
-The API "owns" the permissions; it defines what happens when users present specific permission values.
-The identity provider has to define the permission values, and map specific permissions to users.
-The application needs to know what permissions to request, and limit the requests a user may make
-to the permissions they are granted.
-
-This all must be planned as part of the API development, and the permissions well-defined to configure in the
-identity provider.
-The only actions the application is looking for right now are the *totals* and *reports*, so here are examples of what we will use for permissions:
-
-* **read:totals**
-* **read:reports**
-
-## Part 2: Configure the API in the Auth0 Tenant
+## Part 1: Configure the API in the Auth0 Tenant
 
 1. In the Auth0 tenant use select *Applications &rarr; APIs*.
 
@@ -78,7 +64,7 @@ click the *+ Add* button.
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-api-automatic-m2m.png" /></div>
 
-## Part 3: Use Role-based Access Control (RBAC) to allow user access
+## Part 2: Use Role-based Access Control (RBAC) to allow user access
 
 Users may be assigned API permissions directly.
 Usually users work in groups, and often everyone in the group requires the same access.
@@ -112,11 +98,11 @@ Click the *Users* tab.
 information in the application.
 It is possible to type and select multiple users in this field.
 
-    <div style="text-align: center"><img src="./.assets/images/auth0-assign-users-to-roles.png" /></div>
+    <div style="text-align: center"><img src="./.assets/images/auth0-role-assign-users.png" /></div>
 
 1. Once the user or users have been selected, click the *Assign* button.
 
-## Part 4: Add Access Token Support to the API
+## Part 3: Add Access Token Support to the API
 
 1. Right-click the *certificates* folder at the top-level of the project and select *Open in Integrated Terminal*.
 
@@ -126,6 +112,8 @@ It is possible to type and select multiple users in this field.
     ```bash
     $ mkcert -cert-file localhost-cert.pem -key-file localhost-cert-key.pem localhost mytestsite.localhost 127.0.0.1 ::1
     ```
+
+1. In the *Explorer* check the *certificates* folders at the top level of the project to make sure the files were created.
 
 1. In the terminal run the following command to find the path to the PEM file for the private certificate authority:
     ```bash
@@ -204,7 +192,7 @@ If you explore this file our focus is on adding authorization; everything else h
 
 1. Click the run button next to the dropdown and launch the API.
 
-1. Use the *View &rarr; Open View...* menu option to open the *Debug Console*.
+1. Use the *View &rarr; Open View...* menu option to open the *DEBUG CONSOLE*.
     The successful service start will print *two* URL the service is listening at.
     The first is the public one to use for verification the service is running.
     The second is the HTTPS URL that will be used internally by the application.
@@ -246,7 +234,7 @@ the Auth0 middleware to require the access token by inserting this code:
     ```
 
 1. We need to set the scopes for each of the endpoints.
-Locate the /totals endpoint beginning with *app.get('/expenses/:userid/totals'...*:
+Locate the /totals endpoint beginning with the code in this block:
 
     ```js
     app.get('/expenses/:userid/totals', (req, res) => {
@@ -259,7 +247,13 @@ argument to *app.get*:
     app.get('/expenses/:userid/totals', requiredScopes('read:totals'), (req, res) => {
     ```
 
-1. Do the same for the /reports endpoint beginning with *app.get('/expenses/:userid/reports'...*:
+1. Locate the /totals endpoint beginning with the code in this block:
+
+    ```js
+    app.get('/expenses/:userid/reports', (req, res) => {
+    ```
+
+1. Change this middleware registration to require the read:reports scope:
 
     ```js
     app.get('/expenses/:userid/reports', requiredScopes('read:reports'), (req, res) => {
@@ -283,7 +277,7 @@ You will see a JSON error message like this:
     <div style="text-align: center"><img src="./.assets/images/vscode-rundebug-toolbar-stop.png" /></div>
 
 
-## Part 5: Obtain and Use the Access Token in the Application
+## Part 4: Obtain and Use the Access Token in the Application
 
 This application picks up where Module 01 left off.
 We just have to add a request for the token and then
@@ -408,7 +402,7 @@ Both show up in the *Call Stack* in the Run/Debug panel:
 
     <div style="text-align: center;"><img src="./.assets/images/vscode-rundebug-multiple-apps.png" /></div>
 
-    If you click on a line it will show the output from that app in the *Debug Console*.
+    If you click on a line it will show the output from that app in the *DEBUG CONSOLE*.
 
     When you hover on a line, it shows the Run/Debug toolbar for that application, so you need to manage
     stopping and restarting each application from this window.
@@ -438,8 +432,7 @@ terminals are open:
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
-When your instructor says you are ready to start the next lab
-close any open editor windows besides these instructions, and then follow this
-link to the next lab instructions: [**Module 3 Lab**](./module03-instructions.md).
+When your instructor says you are ready to start the next Lab follow this
+link to the lab instructions: [**Module 3 Lab**](./module03-instructions.md).
 
 [**Table of Contents**](./appdev-workspace.md)

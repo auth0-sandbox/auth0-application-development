@@ -6,171 +6,25 @@
 
 ## Dependencies
 
-* This lab uses the same *certificates/localhost-cert-key.pem* and
-*certificates/localhost-cert.pem* files
-from Module 02 to serve https from the backend API.
+* The Auth0 ACME Financial Management application configuration from Module 01
+* The Auth0 ACME FM Backend API configuration from Module 02
+* *certificates/localhost-cert-key.pem* and *certificates/localhost-cert.pem* created in Module 02
+* The certificate authority file path in the .env file at the top of the project, created in Module 02
+* If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 application configuration
 
 ## Synopsis
 
-Access tokens are *bearer tokens*, which means that without any additional constraints any application
-which obtains a token may use it to gain the token privileges at the API.
-There are some ways to mitigate this outside of the protocols, including limiting API access to particular
-internal network addresses where applications are running.
-In this lab the effort addresses making sure only a properly authenticated application can exchange
-authorization codes for tokens, improving security over client secrets with private key JWT, and
-exploring how a single-page application (SPA) or a native application can be integrated while
-maintaining a high level of security.
-
-## A word... Proof Key for Code Exchange (PKCE)
-
-PKCE is a mechanism designed to ensure that the single-page or native applications that asks for
-a token is the same application that receives the token.
-This is accomplished by sending a hashed, random value (the *code challenge* or "h")
-with the request, and then the original value used to create the challenge
-(the *code verifier* or "v") when the tokens are retrieved.
-In the authorization server if a new hash of the code verifier matches the code challenge (already hashed)
-from the original request, it must be the same application because it passed the real code verifier.
-
-For native applications this is fairly secure.
-They use an embedded web browser to handle the authentication flow, and they do not leave memory,
-so the code verifier is very difficult to compromise.
-For SPAs this is not so secure; the code verifier has to be held in browser local storage while the user
-goes to other pages in the flow.
-Browser local storage is by definition not secure, check the Chrome and Firefox documentation!
-
-## Backend for Frontend (BFF) architecture
-
-Unfortunately, both native applications and SPAs are still subject to counterfeiting where a fake application
-that looks legitimate tricks the user into accepting it, and then the fake obtains the access tokens.
-Many times these tokens allow much more access than the application needs.
-For example, full data sets are often filtered by the application to display just the required data,
-but the fake has access to all the data.
-
-PKCE does not prevent this.
-Neither does Demonstrating Proof-of-Possesion (DPoP), which prevents replay attacks
-(trying to send a captured request a second time) by assuring that only the application issued 
-the token is able to send requests.
-
-Newer application architecture design negates the need for PKCE with Backend-for-Frontend (BFF) APIs.
-The BFF is a hybrid application and API.
-As a user facing application the BFF is not visible, but the user does pass through it for authentication.
-On the API side a BFF acts as a proxy between a user-interface application and the actual backend APIs.
-The applications never see the tokens, the BFF controls what the application can ask for,
-the BFF filters data requests to just what the application needs, and counterfeit applications
-are a reduced problem because they are limited to the functionality the real application has available!
+This lab will implement the backend-for-front-end (BFF) pattern with a Vue user interface, the API
+from the previous lab, and a BFF API that serves the front-end while acting as a proxy to the back-end.
+The BFF will use an access token to communicate with the backend, the UI will use a session cookie
+to identity itself to the BFF.
 
 ## Part 1: The front-end application
 
-The Acme single-page, front-end application is built on the Vue framework.
-Vite is used on the backend as the engine for build and delivery.
-
-The application has already been built, here is a brief tour of how it works.
-Pay close attention to the service module.
-In step five the application has to handle
-redirecting the user to the BFF application endpoint for the user to sign on,
-In step six the API requests to the BFF are authorized with a session cookie, not a token:
-
-1. Right-click the "Module 03/Acme/src/main.js" file and open it to the side.
-This JavaScript file is what kicks the application off; it loads a router component and the main "App"
-component, and tells vue to render it over the Document Object Model (DOM) entity with the ID "app".
-    ```js
-    import App from './App.vue'
-    import router from './router'
-
-    createApp(App).use(router).mount('#app')
-    ```
-
-1. Routing in a Vue app is used to change the view the user sees.
-The router watches the browser address and changes the component when the address changes
-Open the "src/router/index.js" file to see the components displayed for different paths:
-    ```js
-    const routes = [
-    { path: '/', component: Home },
-    { path: '/reports', component: Reports },
-    { path: '/login', component: Login },
-    { path: '/logout', component: Logout },
-    { path: '/userinfo', component: Userinfo }
-    ]
-    ```
-
-1. Open the "Module 03/Acme/src/views/HomeVue.vue" file.
-The Home component is the landing page.
-The component has a *\<script setup>* that executes when the component first loads.
-The *\<template>* is the HTML the component will display, with Vue conditional attributes in the tags:
-    ```html
-    <template>
-    <h1>Home Page</h1>
-    <div>
-        <p>Hello <span v-if="user && user.name"><a href="/userinfo">{{ user.name }}</a></span><span v-else>{{ 'Anonymous' }}</span>,</p>
-    </div>
-    ```
-
-1. The interesting part is in the script.
-"user" is an object with name and picture properties; when the user authenticates the name changes from *null* to their name.
-user comes from the service module.
-On the *Home* page if the user is authenticated, then the asynchronous *getTotals()* from the service module is used to make a call to the BFF.
-As all fallback if we think the user is authenticated, but the BFF does not think the same, then we initiate an authentication flow
-with the *login()* function from the service module:
-    ```js
-    import { getTotals, login, user } from '../services/index.js'
-    var count = null
-    var total = null
-
-    if (user && user.name) {
-        try {
-            var totals = await getTotals()
-            count = totals.count
-            total = totals.total
-        } catch (error) {
-            if (error == 401) {
-                login('/')
-            }
-        }
-    ```
-
-1. So the service module from *src/services/index.js* is where the fun takes place.
-    ```js
-    function login(postLoginRedirect) {
-        // This trips you up: if the user does not successfully authenticate, they never come back to the app!
-        // Also, the user always comes back to /, Login.vue will get the previous page from getPostLoginRedirect().
-        localStorage.setItem('postLoginRedirect', postLoginRedirect)
-        const redirectUrl = `${import.meta.env.VITE_APP_BASE_URL}/login`
-        window.location.href = `${bffUrl}/acme/login?redirect_uri=${encodeURIComponent(redirectUrl)}`
-    }
-    ```
-
-    *login* accepts the path for the user to return to after authentication.
-    This is parked in the *localStorage* persistent storage for the SPA.
-    Remember that the SPA will unload when the browser window location is changed on the last line.
-    Notice the location is the */acme/login* endpoint in the BFF; yes, the BFF is an API but at the same
-    time does serve some endpoints reachable by the browser.
-    The *redirect_uri* query string parameter is telling the BFF where to send the user back after authentication.
-
-    Just to make sure we follow this: the flow is the user loads the SPA, clicks the link to login, redirects
-    to the BFF, the BFF redirects the user to the identity provider (IdP), and if successful the IdP sends the
-    user back to the BFF, and then the BFF sends the user back to this app.
-
-    Note: just like any web application using OAuth2 for authentication, the user comes back only when
-    authentication is successful.
-
-1. The application never sees any tokens, just the successful return if the user authenticates.
-*getTotals()* calls the BFF, but no tokens are involved.
-These functions in the service module depend on the *session* for authorization at the BFF, just like a regular web app:
-    ```js
-    async function getTotals() {
-        try {
-            const response = await axios.get(`${bffUrl}/expenses/totals`)
-            return response.data
-        } catch (error) {
-            throw (error.response && error.response.status === 401) ? 401 : 500
-        }
-    }
-    ```
-
-    So this removes any attacks against an API access token in a public client (works on the server side too).
-    Even if the session cookie is compromised, the attacker could only do what the BFF allows the application to do.
-    The authentication and tokens are on the BFF side because the BFF sent the user for authentication.
-    It simply remembers which session lines up with which authenticated user.
+The Acme Vue application is already built.
+The view pages invoke functions in the service/index.js file to communicate with the BFF.
+Login is handled by redirecting the browser to the BFF and then back, the API calls are
+direct calls from the service layer to the BFF.
 
 1. Right-click the "Module 03/Acme" folder and select *Open in Integrated Terminal*.
 
@@ -178,21 +32,6 @@ These functions in the service module depend on the *session* for authorization 
     ```bash
     $ run npm install
     ```
-
-NOTE:
-* The browser will not send the session cookie cross-domain between http://localhost:37500 (the Acme FM app) and http://localhost:39500 (the BFF).
-* One solution is to use https.
-However, while it was easy in Module 2 to get the web application to accept the certificate from the backend API, this is a much more difficult problem for the browser.
-It would require a shared certificate authority for GitHub Codespace or the Docker container
-running locally.
-This is *why* the BFF in our development environment does not offer https!
-* The chosen solution is Vite.
-Vite can proxy the API requests and handle the session cookie; for this reason the VITE_BFF_URL
-in the Acme .env file is set to the Acme app URL: http://localhost:37500/bff.
-The Acme app apparently sends the API requests to itself, but Vite intercepts that URL and proxies it to the BFF.
-Check the vite.config.js for the proxy configuration.
-* In production this would be replaced with public URLs and certificates
-issued by public certificate authorities.
 
 ## Part 2: The backend API
 
@@ -216,15 +55,10 @@ The API is exactly the same as it was in the previous lab; same endpoints, same 
 
 ## Part 3: The Backend-for-Frontend (BFF) API
 
-Ok, so this works almost exactly as the web application did in the previous lab!
-The user lands on a page requiring login.
-The application sends the user to the IdP authorization server for authentication.
-On successful authentication the authorization server sends back an *authorization code*, and
-the application exchanges it for the ID and access tokens.
-
 The *express-openid-connect* and the generic *auth0* SDKs do not support *Private Key JWT*
-or *DPoP*. So the BFF depends on the *openid-client* SDK which is officially sponsored by Auth0.
-There is a bit more work because it is not integrated with Express, we must do that.
+or *DPoP*.
+The BFF depends on the *openid-client* SDK which is sponsored by Auth0.
+There is a bit more work because it is not integrated with Express, we must do take care of the.
 
 1. The BFF is located in "Module 03/BFF".
     Right-click the folder and select *Open in Integrated Terminal*.
@@ -239,43 +73,9 @@ There is a bit more work because it is not integrated with Express, we must do t
     $ npm install openid-client
     ```
 
-1. Most of the BFF application looks similar to the Acme web application in the previous
-    lab.
-    Open the "Module 03/BFF/src/server.js" file to see where we are going with this:
-    ```js
-    // Set up the session with an exposed memory store for the callback function.
-    const sessionStore = new session.MemoryStore()
-    app.use(
-        session({
-            cookie: {
-                httpOnly: true,
-                sameSite: 'lax',
-                secure: false
-            },
-            resave: false,
-            saveUninitialized: true,
-            secret: process.env.SECRET,
-            store: sessionStore
-        })
-    )
-
-    // Set up Pug (for the landing page with instructions).
-    const __filename = fileURLToPath(import.meta.url)
-    const __fileDirectory = dirname(__filename)
-    const __dirname = normalize(path.join(__fileDirectory, ".."))
-    app.set("views", path.join(__dirname, "views"))
-    app.set("view engine", "pug")
-
-    app.use(logger("combined"))
-    ```
-
-    Just like the application in the last lab there are imports to get the modules,
-    *Express* is the foundation, sessions are configured, Pug is set up for the landing page, etc.
-    Three endpoints are already registered: */, /user* and */privatekey.pem*.
-
 1. The BFF is placed between the SPA and the backend API and provides the OAuth2 authentication functionality the Acme web application
-    did, so we can use the same credentials.
-    Open the "Module 03/BFF/.env" to set these.
+    did, so we can use the same credentials from the previous application.
+    Right-click the "Module 03/BFF/.env" and open it to the side.
     The static values have been left configured for you, but you need to set the *ISSUER, CLIENT_ID,* and *CLIENT_SECRET*.
     The easy way is to copy the values from "Module 02/BFF/.env":
     ```
@@ -315,13 +115,15 @@ There is a bit more work because it is not integrated with Express, we must do t
     }
     ```
 
-1. In the server.js file, add an import statement with the others at the top of the file to load the class definition:
+1. Open the "Module 03/BFF/src/server.js" file.
+
+1. Add an import statement with the others at the top of the file to load the class definition:
     ```js
     import TokenManager from './OpenidClientTokenManager.js'
     ```
 
 1. Locate the *dotenv.config()* call, and immediately after it create an instance of TokenManager, passing it the values from
-    the environment:
+    the environment by adding this code:
     ```js
     const tokenManager = new TokenManager(process.env.ISSUER, process.env.CLIENT_ID, process.env.CLIENT_SECRTE)
     ```
@@ -345,7 +147,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     })
     ```
 
-    Notes:
+    NOTES:
     * The BFF needs a redirect URI to send the user back to the Acme application after a successful authentication.
     * This uses the *getAuthenticationUrl* method in the class to build the URL the user is sent to for authentication.
 
@@ -364,7 +166,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     }
     ```
 
-    Note: this class is decoupled from the BFF application;
+    NOTE: this class is decoupled from the BFF application;
     the method is told where the flow returns to, the audience of the API we want a token for, and the scopes (grants or permissions) the token must provide.
 
 1. Half-way through the authentication!
@@ -378,7 +180,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     })
     ```
 
-    OAuth2 defines that the authorization code is always returned as the *code* query string parameter, so this code checks to make
+    NOTE: OAuth2 defines that the authorization code is always returned as the *code* query string parameter, so this code checks to make
     sure it is there.
 
 1. *openid-client* will handle the token exchange, but we need to get the code to the *TokenManager*.
@@ -427,7 +229,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     }
     ```
     
-    The exchange requires the original callback URL, and the session is used to cache the tokens for the user.
+    NOTE: The exchange requires the original callback URL, and the session is used to cache the tokens for the user.
     Remember, potentially thousands of SPA instances could be using this BFF all at the same time and the session
     is how we keep them all separated.
 
@@ -543,7 +345,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     })
     ```
 
-    There are two possibilities for failure here: an error could be thrown trying to destroy the session because it is not real, or
+    NOTE: There are two possibilities for failure here: an error could be thrown trying to destroy the session because it is not real, or
     the destroy method in the session could return an error.
 
 1. We need to make a change to the application configuration at Auth0.
@@ -572,7 +374,7 @@ There is a bit more work because it is not integrated with Express, we must do t
     }
     ```
 
-    Check first to make sure the user is actually logged in and has an access token before invoking the API call with *fetchProtectedResource*.
+    NOTE: Check first to make sure the user is actually logged in and has an access token before invoking the API call with *fetchProtectedResource*.
     The content type and accepted data type are initially set to JSON, but the spread operator will replace that with whatever is in *headers*
     if the properties exist there.
 
@@ -615,8 +417,18 @@ There is a bit more work because it is not integrated with Express, we must do t
 
 1. Make sure the work you did in *server.js* and *OpenidClientTokenManager.js* is saved.
 
+## Part 4: Launch the application
+
+1. GitHub Codespace ONLY the Vue application needs the correct URL to the BFF:<br>
+    a. In Run/Debug select the "Module 3: Launch BFF" run configuration.<br>
+    b. Launch the BFF.<br.
+    c. In the DEBUG CONSOLE copy the URL for the BFF application.<br>
+    d. Open the "Module 03/Acme/.env" file.<br>
+    e. Change the value of VITE_BFF_URL to the URL just copied for the BFF application.<br>
+    f. Save and close the .env file.<br>
+
 1. In Run/Debug select the "Module 3: Launch BFF API" and start the application.
-    This was to get the URL the BFF is listening at, find it on the Debug Console.
+    This was to get the URL the BFF is listening at, find it on the DEBUG CONSOLE.
     Copy the URL.
 
 1. Open the file "Module 03/Acme/.env" and set the VITE_BFF_URL environment variable to the BFF URL you copied.
@@ -638,15 +450,7 @@ There is a bit more work because it is not integrated with Express, we must do t
 
 1. Terminate the three applications in Run/Debug.
 
-## Part 4: Beyond client secrets with Private Key JWT
-
-Secrets cannot be set in a public client, and passing them repeatedly from a confidential client
-increases the chances to compromise them, even through an encrypted back-channel.
-Forcing the traffic through a proxy server allows a "monster-in-the-middle" attack.
-
-*Mutual TLS* (mTLS) and *Private Key JWT* both rely on the client to encrypt a challenge with a
-private key to ensure their authenticity; that way the credentials are never sent with the request!
-mTLS does it when the connection is established, Private Key JWT handles it during the token exchange.
+## Part 5: Beyond client secrets with Private Key JWT
 
 1. Right-click on the "certificates" folder at the top of the project and use "Open in integrated terminal"
 to launch a terminal window in that folder.
@@ -656,7 +460,7 @@ to launch a terminal window in that folder.
     $ npm install jose
     ```
 
-1. Run the two *openssl* commands to generate a private/public key pair in the project *certificates* folder:
+1. Run these two *openssl* commands to generate a private/public key pair in the project *certificates* folder:
     ```bash
     $ openssl genrsa -out ../../certificates/privatekey.pem 2048
     $ openssl rsa -in ../../certificates/privatekey.pem -pubout -out ../../certificates/publickey.pem
@@ -678,7 +482,7 @@ to launch a terminal window in that folder.
 
 1. A few lines down locate the line where the TokenManager was instantiated:
     ```js
-    onst tokenManager = new TokenManager(...
+    const tokenManager = new TokenManager(...
     ```
 
 1. Just before this line add a new statement to open and read the private key file:
@@ -692,7 +496,7 @@ to launch a terminal window in that folder.
     const tokenManager = new TokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
     ```
 
-    This is all to decouple the private key from the TokenManager, it receives it but does not
+    NOTE: this is all to decouple the private key from the TokenManager, it receives it but does not
     have any concern about where to find it.
 
 1. In the *OpenidCLientTokenManager.js* file add an import statement for *jose* with the function we need to translate PEM keys:
@@ -724,7 +528,7 @@ to launch a terminal window in that folder.
     }
     ```
 
-    Note: the secret becomes *null* in the call to *discovery*, and a fourth parameter is added to pass the CryptoKey.
+    NOTE: the secret becomes *null* in the call to *discovery*, and a fourth parameter is added to pass the CryptoKey.
     This function can now support either a secret or Private Key JWT.
 
 1. Auth0 needs to know about the private key too, or it will not accept the authentication.
@@ -765,8 +569,7 @@ to launch a terminal window in that folder.
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!
 
-When your instructor says you are ready to start the next Lab,
-Close all the editor windows in the right-side panel, and then follow this
+When your instructor says you are ready to start the next Lab follow this
 link to the lab instructions: [**Module 4 Lab**](./module04-instructions.md).
 
 [**Table of Contents**](./appdev-workspace.md)
