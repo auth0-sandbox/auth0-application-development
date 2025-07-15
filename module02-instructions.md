@@ -68,7 +68,7 @@ and click the *+ Add* button:
 
     <div style="text-align: center;"><img src="./.assets/images/auth0-api-create-permission.png" /></div>
 
-1. Fill in a second permission as *read:reports* and a description of *Read expense reports*, and
+1. Fill in a second permission as *read:reports* and a description of *Read user expense data*, and
 click the *+ Add* button.
 
 1. NOTE: When you look under *Applications &rarr; Applications* some Auth0 tenants may automatically
@@ -148,9 +148,9 @@ It is possible to type and select multiple users in this field.
 
 1. Close the .env file to keep it from being confused with the .env file opened in the next step.    
 
-1. In the VS Code Explorer panel find the API folder and right-click on *.env*.
+1. In the VS Code Explorer panel find the "Module 02/API" folder and right-click on *.env*.
 Choose the *Open to the Side* option.
-Notice that the *AUDIENCE, ISSUER, JWKS_URI, PRIVATE_KEY_PATH*, and *CERTIFICATE_PATH* are not set.
+Notice that the *AUDIENCE, ISSUER,* and *JWKS_URI* are not set.
 
 1. In the Auth0 tenant use the sidebar to navigate to *Applications &rarr; Applications* and
 choose the *ACME Financial Management* application.
@@ -161,16 +161,18 @@ choose the *ACME Financial Management* application.
 
 1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
 
-1. Set the *ISSUER* to the URL of your Auth0 tenant: *https&#x200B;://\<your domain>.\<your region>.auth0.com*.
-That happens to be the first part of the JWKS_URI value, up to the / in front of the path part of the URL, so you
-can get it from there.
+1. Set the *ISSUER* to the URL of your Auth0 tenant: *https&#x200B;://\<your domain>.\<your region>.auth0.com/*.
+That happens to be the first part of the JWKS_URI value, up to and including
+the / in front of the path part of the URL, so you can get it from there.
+Make sure the trailing slash is present, because the access token *iss* claim will have it and the
+API needs to match what is sent exactly.
 
 1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API:
     ```
     AUDIENCE="https://acme-fm-backend-api"
     ```
 
-1. Set the values to locate the private key and HTTPS certificate files:
+1. Set these environment variables and values as shown in .env to locate the private key and HTTPS certificate files:
     ```
     PRIVATE_KEY_PATH="../../certificates/localhost-cert-key.pem"
     CERTIFICATE_PATH="../../certificates/localhost-cert.pem"
@@ -191,6 +193,8 @@ Right-click on the folder and choose *Open in Integrated Terminal*.
 
 1. In the Explorer panel find the API folder, expand *src*, and double-click *server.js* to open it.
 If you explore this file our focus is on adding authorization; everything else has been provided for you.
+
+1. Close the .env file, it is no longer needed.
 
 1. Open the *Run/Debug* panel from the VS Code toolbar.
 
@@ -299,12 +303,12 @@ and then in the Explorer panel double-click the *Module 02/Acme/.env file to ope
 1. Set the *CLIENT_ID, CLIENT_SECRET,* and *ISSUER_BASE_URL* as we did in Module 01.
 Hint: go find the .env file from Module01 and copy the three values.
 
-1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*http&#x200B;://acme-fm-backend-api*".
+1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*https&#x200B;://acme-fm-backend-api*".
 
 1. Set the BACKEND_URL to the local URL the API will listen on: "https&#x200B;://localhost:38443".
 The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
 
-1. Save the file.
+1. Save and close the .env file.
 
 1. In the Explorer panel find the *Module 02/Acme/src/app.js* file and double-click to open it.
 Hint: if it opens in the left editor panel instead of the right panel, click the tab and drag it to the right panel.
@@ -325,65 +329,50 @@ to get the ID token properly:
         scope: 'openid profile email read:totals read:reports',
     ```
 
-1. NOTE: the application already has a try...catch for the API call in the endpoint for the home page.
-You do not have to add this, but we will explain it; fetch is outside the class scope:
+1. Locate the endpoint for the home landing page, and the declaration of the *config* object:
     ```js
     app.get("/", async (req, res) => {
         let locals = { user: req.oidc && req.oidc.user, total: null, count: null }
         if (locals.user) {
             try {
-                const apiUrl = `${process.env.BACKEND_URL}/${locals.user.sub}/totals`
+                const apiUrl = `${process.env.BACKEND_URL}/backend/${locals.user.sub}/totals`
                 const config = {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     }
-                }
-                const response = await fetch(apiUrl, config)
-                if (response.ok) {
-                    locals = { ...locals, ...await response.json()}
-                }
-            }
-            catch (error) {
-            }
-        }
-        res.render("home", locals)
-    })
+                ...
     ```
-    In the previous iteration of the application the data was embedded, and the calculation of *total* and *count* was
-    passed to the *pug* page template.
-    Now we will use *fetch* to go get the data from the API.
-    If the request is OK the data is passed to *pug*, otherwise the *catch* eats any error and null data is passed to *pug*,
-    which causes the page to report the internal error.
+    The setup for the fetch with the HTTP headers and URL has been provided.
 
-    Pay attention to the fifth line: *locals* has been initialized with the user object from the request; this is an object
-    that the Auth0 middleware inserts into the request for an authenticated user.
-    That "sub" claim from that object is being used as the identification for the user to the API.
-    You may say to yourself: "but that value is already in the access token!".
-    And you would be correct, but using it as part of the REST request is a double check for the API (it must be the
-    same user ID in the request and in the token).
-
-    The Auth0 middleware also puts the access token in the "OIDC" property of the request object; here we go into it to get the access
-    token that was issued when the grant request for the backend API was made.
-    Note the middleware provides an object named *accessToken* containing the expiration date, etc.
-    that itself has the real access token as the *access_token* property.
-
-1. Well, we were not completely truthful!
-In order to make the API call you have to pass the access token, that is the whole point of the exercise.
-Locate the middleware registration that beings with *app.get("/", async (req, res) => {*, the one we were just looking at above.
-
-1. To send the bearer token add this line to the *headers* in the configuration we were just looking at for
-the call to fetch (below 'Content-Type' and 'Accept'):
-
+1. To send the bearer token add this line to the *headers* in the *config* we just located, right after
+    the 'Accept' header:
     ```js
     'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
     ```
 
     Note the grave accents (`) around the JavaScript template literal (the value); they are not single-quotation marks!
 
-1. Locate the registration for the /expenses endpoint: *app.get("/expenses", requiresAuth(), async (req, res, next) => {*.
-Add the same authorization header we just did in the previous step to the headers in this endpoint as well.
+1. Locate the registration for the /expenses endpoint:
+    ```js
+    app.get("/expenses", requiresAuth(), async (req, res, next) => {
+    let expenses = []
+    try {
+        const apiUrl = `${process.env.BACKEND_URL}/expenses/${req.oidc.user.sub}/reports`
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            ...
+    ```
 
+1. As we did for the landing page, add the bearer to the *headers* in the *config* we just located, right after
+    the 'Accept' header:
+    ```js
+    'Authorization': `Bearer ${req.oidc.accessToken.access_token}`
+    ```
+    
 1. In the Run/Debug panel make sure *Launch Module 2: ACME FM* is selected as the launch configuration and launch the program.
 
 1. Sign on to the app with the user from before; this should be the user that has the role with the API permissions.

@@ -55,6 +55,7 @@
                 "--watch",
                 ".env"
             ],
+            "envFile": "${workspaceRoot}/.env",
             "program": "src/server.js",
             "restart": true,
             "console": "internalConsole"

@@ -1,5 +1,14 @@
 Module 02
-    - Make the API use mkcert and TLS
+    - Change the settings page of the API with the right audience, maybe make the description just mention the audience.
+    - The second permission should really be read:expenses throughout, but that is a big change.
+    - 5-12 Reduce or eliminate the big note
+    - 5-13 maybe goes away
+    - 5-14 be clearer about where the code is (improve 5-12)
+    - 5-15 clarify
+
 
 Module 05? MFA
     - Add ACR: acr_values with the authentication request, claim or scope that the level was achieved
+
+
+Did we change the callback URLs properly in module 3?
