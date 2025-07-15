@@ -67,16 +67,39 @@ via the Management API.
 
 The Acme VUE application has already been modified to show the link to clear enrollments on the *Profile* page.
 
-1. Locate the "Module 05/API/.env" file and open it.
+1. Right-click the "Module 05/API/.env" file and open it to the side.
 
 1. Set the missing environment variables with the values from the Auth0 tenant (hint: go back to the corresponding file in Module 04).
 
+1. Save and close the .env file.
+
+1. Right-click the "Module 05/API" folder and open it in the integrated terminal.
+
+1. Install the depdencies:
+    ```bash
+    $ npm install
+    ```
+
+1. Close the terminal window.
+
+1. Right-click the "Module 05/BFF/.env" file and open it to the side.
+
 1. Set the missing environment variables for "Module 05/BFF/.env".
 
-1. In the Explorer panel find and right-click the "Module 05/BFF/src/server.js" file.
-    Select the *Open to the side* option.
+1. Save and close the .env file.
 
-1. In server.js near the end of the file locate the Express endpoint registration that the Vue application calls
+1. Right-click the "Module 05/BFF" folder and open it in the integrated terminal.
+
+1. Install the depdencies:
+    ```bash
+    $ npm install
+    ```
+
+1. Close the terminal window.
+
+1. Right-click the "Module 05/BFF/src/server.js" file an open it to the side.
+
+1. In server.js near the end of the file locate the following code the Express endpoint registration that the Vue application calls
     to set the *optin_mfa* property:
     ```js
     app.patch('/acme/profile/optinmfa', async (req, res) => { ...
@@ -98,8 +121,18 @@ The Acme VUE application has already been modified to show the link to clear enr
     })
     ```
 
-    This is almost identical to the *optinmfa*, except that it responds to the HTTP *DELETE* verb because the enrollment is being deleted,
+    NOTE: This is almost identical to the *optinmfa*, except that it responds to the HTTP *DELETE* verb because the enrollment is being deleted,
     and it does not pass any data.
+
+1. If this is in a GitHub Codespace *ONLY*:<br>
+    a. Open the "Module 04/Acme/.env" file.<br>
+    b. Open the "Module 03/Acme/.env" file.<br>
+    c. Copy the VITE_BFF_URL variable and value from the Module 03 file<br>
+        and replace the variable in the Module 04 file.<br>
+    d. Warning: the URL will change if you are using a new Codespace for Module 04.<br>
+    e. Save and close both files.
+
+## Part 4: Launch the applications
 
 1. In the Run/Debug panel select *Module 5: Launch All* as the run configuration.
 
@@ -108,8 +141,9 @@ The Acme VUE application has already been modified to show the link to clear enr
 1. In the Run/Debug Panel under the Call Stack, select the vite application and look on the DEBUG CONSOLE for the URL to open it.
 
 1. Sign on to verify everything is working, then sign out.
+    Leave the application running.
 
-## Part 4: Set up the action script
+## Part 5: Set up the action script
 
 1. In the Auth0 tenant sidebar select *Actions &rarr; Library*.
 
@@ -183,7 +217,7 @@ The Acme VUE application has already been modified to show the link to clear enr
 1. Check the *Actions Real-Time Logs* you opened in the other tab.
     Nothing is displayed; action failure does not result in a message.
 
-## Part 5: Handling failure gracefully
+## Part 6: Handling failure gracefully
 
 So there is a choice for failed actions: terminate the flow, or ignore it and go to the next step.
 
@@ -232,7 +266,7 @@ So there is a choice for failed actions: terminate the flow, or ignore it and go
 
 1. Use the browser back button to go back to the application landing page.
 
-## Part 6: Logging messages
+## Part 7: Logging messages
 
 NodeJS offers console.log(), info(), warn(), error(), debug(), assert(), etc.
 The actions environment does not differentiate between them, they all get written to the same log.
@@ -314,7 +348,7 @@ Define configurable functions to handle logging and debugging.
 
 1. Click the *Save Draft* button.
 
-## Part 7: Handling opt-in MFA
+## Part 8: Handling opt-in MFA
 
 1. Everything will go in the try block.
     Add a log message at the top of the try block to log the action.
@@ -366,8 +400,9 @@ Define configurable functions to handle logging and debugging.
     }
     ```
 
-1. That is everything.
-    Deploy the action.
+1. Deploy the action.
+
+## Part 9: Test the action script
 
 1. In the Auth0 tenant start with the sidebar to find the user you are using for sign-on:
     *User Management &rarr Users, \<your User>*.

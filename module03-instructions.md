@@ -30,7 +30,7 @@ direct calls from the service layer to the BFF.
 
 1. Run *npm* to install the dependency packages:
     ```bash
-    $ run npm install
+    $ npm install
     ```
 
 ## Part 2: The backend API
@@ -42,7 +42,7 @@ The API is exactly the same as it was in the previous lab; same endpoints, same 
 
 1. Run *npm* to install the dependency packages:
     ```bash
-    $ run npm install
+    $ npm install
     ```
 
 1. Open the "Module 03/API/.env" file.
@@ -65,7 +65,7 @@ There is a bit more work because it is not integrated with Express, we must do t
 
 1. Run *npm* to install the dependency packages:
     ```bash
-    $ run npm install
+    $ npm install
     ```
 
 1. Use *npm* to install the *openid-client* package:
