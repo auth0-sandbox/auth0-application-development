@@ -1,4 +1,4 @@
-// server.js - Auth0 Application Development Module 03 Lab
+// app.js - Auth0 Application Development Module 02 Lab
 // Backend for Frontend API
 //
 
@@ -6,6 +6,7 @@ import cors from 'cors'
 import dotenv from "dotenv"
 import express from 'express'
 import session from 'express-session'
+import fs from 'fs'
 import logger from 'morgan'
 import path, { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
@@ -78,6 +79,99 @@ app.get("/user", async (req, res) => {
 })
 
 // API endpoints begin here.
+
+app.get('/acme/login', async (req, res) => {
+    if (!req.query?.redirect_uri) {
+        return res.status(400).send('Bad request')
+    }
+    // Save the redirect_uri in the session so we can return to it after authentication. It is uncessary to check redirect_uri
+    // like OAuth2: if the redirect goes to another application the session here in the BFF does not line up for that application.
+    req.session.redirectUri = req.query.redirect_uri
+    res.redirect(tokenManager.getAuthenticationUrl(`${process.env.BASE_URL}/callback`, process.env.BACKEND_AUDIENCE, process.env.BACKEND_SCOPE))
+})
+
+app.get('/callback', express.urlencoded({ extended: true }), async (req, res) => {
+    if (!req.query?.code) {
+        return res.status(400).send('Bad request')
+    }
+    try {
+        await tokenManager.exchangeAuthorizationCode(`${req.protocol}://${req.get('host')}/${req.originalUrl}`, req.session)
+        const idToken = await tokenManager.getIdTokenDecoded(req.session)
+        // Return the user to the app with ?name=&picture=
+        const redirect_uri = `${req.session.redirectUri}?name=${encodeURIComponent(idToken?.payload?.name)}&picture=${encodeURIComponent(idToken?.payload?.picture)}`
+        res.redirect(redirect_uri)
+    } catch (error) {
+        console.error('Error during callback:', error)
+        res.status(500).send('Internal server error')
+    }
+})
+
+app.get('/acme/logout', async (req, res) => {
+    if (!req.query?.post_logout_redirect_uri) {
+        return res.status(400).send('Bad request')
+    }
+    const redirectUri = await tokenManager.getLogoutUrl(`${process.env.BASE_URL}/postlogout`, req.session)
+    if (redirectUri) {
+        req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
+    } else {
+        redirectUri = post_logout_redirect_uri
+    }
+    res.redirect(redirectUri)
+})
+
+app.get('/postlogout', (req, res) => {
+    if (!req.session.post_logout_redirect_uri) {
+        return res.status(400).send('Bad request')
+    }
+    const post_logout_redirect_uri = req.session.post_logout_redirect_uri
+    try {
+        req.session.destroy((err) => {
+            // Clear the session and redirect to the logout URL.
+            if (err) {
+                console.error('Error destroying session:', err)
+                res.status(500).send('Internal server error')
+            } else {
+                res.redirect(post_logout_redirect_uri)
+            }
+        })
+    } catch (error) {
+        console.error('Error destroying sexsion', error)
+        res.status(500).send('Internal server error')
+    }
+})
+
+app.get('/expenses/totals', async (req, res) => {
+    const idToken = await tokenManager.getIdTokenDecoded(req.session)
+    const apiUrl = `${process.env.BACKEND_URL}/expenses/${idToken?.payload.sub}/totals`
+    tokenManagerFetch(req, res, apiUrl)
+})
+
+app.get('/expenses/reports', async (req, res) => {
+    const idToken = await tokenManager.getIdTokenDecoded(req.session)
+    const apiUrl = `${process.env.BACKEND_URL}/expenses/${idToken?.payload.sub}/reports`
+    tokenManagerFetch(req, res, apiUrl)
+})
+
+app.get('/acme/userinfo', async (req, res) => {
+    const apiUrl = `${process.env.ISSUER_BASE_URL}${process.env.ISSUER_BASE_URL.endsWith('/') ? '' : '/'}userinfo`
+    tokenManagerFetch(req, res, apiUrl)
+})
+
+async function tokenManagerFetch(req, res, apiUrl) {
+    try {
+        const response = await tokenManager.fetchProtectedResource(
+            req.session,
+            apiUrl,
+            'GET')
+        res.status(200).set({ 'Content-Type': 'application/json' })
+            .send(await response.text())
+    }
+    catch (error) {
+        res.status(error == 401 ? 401 : 500)
+            .send(error == 401
+            ? 'Authentication required' : 'Internal server error')
+    }
+}
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500)

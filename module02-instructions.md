@@ -6,7 +6,7 @@
 
 ## Dependencies
 
-* The Auth0 ACME Financial Management application configuration from Module 01
+* The Auth0 ACME Financial Management client configuration from Module 01
 * If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 application configuration
 
 ## Synopsis

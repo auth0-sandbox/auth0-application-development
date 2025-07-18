@@ -145,37 +145,37 @@ app.get('/postlogout', (req, res) => {
 })
 
 app.get('/expenses/totals', async (req, res) => {
-    try {
-        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/totals`
-        const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
-    }
-    catch (error) {
-        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
-    }
+    const idToken = await tokenManager.getIdTokenDecoded(req.session)
+    const apiUrl = `${process.env.BACKEND_URL}/expenses/${idToken?.payload.sub}/totals`
+    tokenManagerFetch(req, res, apiUrl)
 })
 
 app.get('/expenses/reports', async (req, res) => {
-    try {
-        const apiUrl = `${process.env.BACKEND_URL}/expenses/${(await tokenManager.getIdTokenDecoded(req.session))?.payload.sub}/reports`
-        const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
-    }
-    catch (error) {
-        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
-    }
+    const idToken = await tokenManager.getIdTokenDecoded(req.session)
+    const apiUrl = `${process.env.BACKEND_URL}/expenses/${idToken?.payload.sub}/reports`
+    tokenManagerFetch(req, res, apiUrl)
 })
 
 app.get('/acme/userinfo', async (req, res) => {
+    const apiUrl = `${process.env.ISSUER_BASE_URL}${process.env.ISSUER_BASE_URL.endsWith('/') ? '' : '/'}userinfo`
+    tokenManagerFetch(req, res, apiUrl)
+})
+
+async function tokenManagerFetch(req, res, apiUrl) {
     try {
-        const apiUrl = `${process.env.ISSUER}userinfo`
-        const response = await tokenManager.fetchProtectedResource(req.session, apiUrl, 'GET')
-        res.status(200).set({ 'Content-Type': 'application/json' }).send(await response.text())
+        const response = await tokenManager.fetchProtectedResource(
+            req.session,
+            apiUrl,
+            'GET')
+        res.status(200).set({ 'Content-Type': 'application/json' })
+            .send(await response.text())
     }
     catch (error) {
-        res.status(error == 401 ? 401 : 500).send(error == 401 ? 'Authentication required' : 'Internal server error')
+        res.status(error == 401 ? 401 : 500)
+            .send(error == 401
+            ? 'Authentication required' : 'Internal server error')
     }
-})
+}
 
 app.get('/acme/profile', async (req, res) => {
     try {

@@ -6,12 +6,14 @@
 
 ## Dependencies
 
-* This lab uses the same *certificates/localhost-cert-key.pem* and
-*certificates/localhost-cert.pem* files
-from Module 02 to serve https from the backend API.
-* It uses the same *certificates/privatekey.pem* and *certificates/publickey.pem* from Module 03 to
-authenticate with Private Key JWT to the authorization server.
-* It depends on the *user_metadata.optin_mfa* established in Module 04, although this may also be set manually.
+* The Auth0 ACME Financial Management client configuration from Module 01
+* The Auth0 ACME FM Backend API configuration from Module 02
+* *certificates/localhost-cert-key.pem* and *certificates/localhost-cert.pem* created in Module 02
+* The certificate authority file path in the .env file at the top of the project, created in Module 02
+* The Auth0 ACME Financial Management client Private Key JWT configuration from Module 03.
+* The Private Key JWT certificates created in Module 03.
+* The *user_metadata.optin_mfa* profile attribute established in Module 04.
+* If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 client configuration.
 
 ## Synopsis
 

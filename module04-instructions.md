@@ -6,13 +6,13 @@
 
 ## Dependencies
 
-* The Auth0 ACME Financial Management application configuration from Module 01
+* The Auth0 ACME Financial Management client configuration from Module 01
 * The Auth0 ACME FM Backend API configuration from Module 02
 * *certificates/localhost-cert-key.pem* and *certificates/localhost-cert.pem* created in Module 02
 * The certificate authority file path in the .env file at the top of the project, created in Module 02
+* The Auth0 ACME Financial Management client Private Key JWT configuration from Module 03.
 * The Private Key JWT certificates created in Module 03.
-* If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 application configuration
-erver.
+* If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 client configuration.
 
 ## Synopsis
 
@@ -227,63 +227,13 @@ the Express registration of the error middleware:
 
 1. Changing the checkbox will change the *app_metadata* in the profile, which may be seen as the profile refreshes.
 
-1. Log out of the Acme application.
+1. Sign out of the Acme application.
 
 1. Terminate all three applications in Run/Debug.
 
-## Part 6: Fix the asynchronous timing
+1. Close any editor windows in the right-side panel.
 
-getClientAccessToken could be invoked before the issuer is complete in
-OpenidClientTokenManager.
-Force the issuer to complete before proceeding.
-
-1. In OpenidClientTokenManager.js locate the constructor.
-
-1. Remove the parameters, and the call to *init*:
-    ```js
-    constructor () {
-        this.clientAccessTokens = {}
-    }
-
-1. Find the *init* methods, and replace it completely with a static *getTokenManager* method that looks like this:
-    ```
-    static async getTokenManager(issuer, clientId, clientSecretOrPemKey) {
-        let tokenManager = new TokenManager()
-        if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
-            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
-        } else {
-            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
-        }
-        return tokenManager
-    }
-    ```
-
-1. In server.js locate the line instantiating the TokenManager:
-    ```js
-    const tokenManager = new TokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
-    ```
-
-1. Replace that line with a blocking call to the asynchronous static *getTokenManager* method:
-    ```js
-    const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER, process.env.CLIENT_ID, privateKey)
-    ```
-
-    The *await* makes sure the issuer has been set in the TokenManager before the program continues.
-    Now if *getClientToken* is used at the top-level of the program the issuer it needs is available.
-
-
-1. As above launch the "Module 4: Launch All" run configuration, locate the URL for the Acme front-end application
-    and visit it.
-
-1. Log in as a user and check that everything works.
-
-1. Log out of the Acme application.
-
-1. Terminate all three applications in Run/Debug.
-
-1. Close all the open files in the right editor panel.
-
-1. Close any open terminals.
+1. Close any open terminal windows.
 
 <br>![Stop](./.assets/images/stop.png)
 Congratulations, you have completed this lab!

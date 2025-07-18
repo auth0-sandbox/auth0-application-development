@@ -9,16 +9,17 @@ import jwt from 'jsonwebtoken'
 import * as client from 'openid-client'
 
 class TokenManager {
-    constructor(issuer, clientId, clientSecretOrPemKey) {
-        this.init(issuer, clientId, clientSecretOrPemKey)
+    constructor() {
     }
-
-    async init(issuer, clientId, clientSecretOrPemKey) {
+    
+    static async getTokenManager(issuer, clientId, clientSecretOrPemKey) {
+        let tokenManager = new TokenManager()
         if (clientSecretOrPemKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
-            this.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
+            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, null, client.PrivateKeyJwt(await importPKCS8(clientSecretOrPemKey, 'RS256')))
         } else {
-            this.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
+            tokenManager.issuerConfig = await client.discovery(new URL(issuer), clientId, clientSecretOrPemKey)
         }
+        return tokenManager
     }
 
     getAuthenticationUrl(callbackUrl, audience, requiredScopes) {

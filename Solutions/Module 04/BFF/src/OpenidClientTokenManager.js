@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken'
 import * as client from 'openid-client'
 
 class TokenManager {
-    constructor(issuer, clientId, clientSecretOrPemKey) {
+    constructor() {
         this.clientAccessTokens = {}
     }
     

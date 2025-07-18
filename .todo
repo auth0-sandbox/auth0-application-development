@@ -12,3 +12,13 @@ Module 05? MFA
 
 
 Did we change the callback URLs properly in module 3?
+
+
+Module 3
+
+1. In the server add /acme/login and explain how the vue app starts a session, and the bff actually does the login flow.
+1. Add the /acme/callback and reinforce the bff has the tokens, the cached redirect sends the user back to the vue app.
+1. In the tokenmanager add and explain the fetchProtectedResource; the point is it will support Private Key JWT
+1. In the server.js add the proxies for /expenses/totals and /expenses/reports and explain how the session works
+1. Add the proxy for /userinfo and explain how the token has dual audiences
+1. Add the Private Key JWT replacing the secret.
