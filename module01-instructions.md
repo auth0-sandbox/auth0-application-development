@@ -228,7 +228,7 @@ and add this code following that to create it and register the client in one sta
 / should be unprotected, but we need to add the *requiresAuth* middleware to
 the other two registrations, so authentication will be required.
 Change the registration for */user* to look like this by
-adding *requireAuthentcation* as the
+adding *requiresAuth* as the
 second argument:
     ```js
     app.get("/user", requiresAuth(),  async (req, res) => {
