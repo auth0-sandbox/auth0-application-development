@@ -85,13 +85,13 @@ app.get("/user", async (req, res) => {
 // API endpoints begin here.
 
 app.get('/acme/login', async (req, res) => {
-    if (!req.query?.redirect_uri) {
+    if (!req.query?.redirect_uri || !req.query?.app_id) {
         return res.status(400).send('Bad request')
     }
     // Save the redirect_uri in the session so we can return to it after authentication. It is uncessary to check redirect_uri
     // like OAuth2: if the redirect goes to another application the session here in the BFF does not line up for that application.
     req.session.redirectUri = req.query.redirect_uri
-    res.redirect(tokenManager.getAuthenticationUrl(`${process.env.BASE_URL}/callback`, process.env.BACKEND_AUDIENCE, process.env.BACKEND_SCOPE))
+    res.redirect(tokenManager.getAuthenticationUrl(`${process.env.BASE_URL}/callback`, process.env.BACKEND_AUDIENCE, process.env.BACKEND_SCOPE, req.query.app_id))
 })
 
 app.get('/callback', express.urlencoded({ extended: true }), async (req, res) => {

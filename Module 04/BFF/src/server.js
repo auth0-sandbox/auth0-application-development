@@ -15,8 +15,7 @@ import TokenManager from './OpenidClientTokenManager.js'
 console.log(process.cwd())
 
 dotenv.config()
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8')
-const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER_BASE_URL, process.env.CLIENT_ID, privateKey)
+const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER_BASE_URL, process.env.CLIENT_ID, process.env.CLIENT_SECRET)
 
 if (!process.env.BASE_URL) {
     process.env.BASE_URL = !process.env.CODESPACE_NAME

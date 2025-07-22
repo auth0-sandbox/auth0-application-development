@@ -23,13 +23,14 @@ class TokenManager {
         return tokenManager
     }
 
-    getAuthenticationUrl(callbackUrl, audience, requiredScopes) {
+    getAuthenticationUrl(callbackUrl, audience, requiredScopes, appId) {
         const url = client.buildAuthorizationUrl(this.issuerConfig,
             {
                 redirect_uri: callbackUrl,
                 scope: `openid profile email offline_access ${requiredScopes}`,
                 audience: audience,
-                response_type: 'code'
+                response_type: 'code',
+                app_id: appId
             })
         return url
     }

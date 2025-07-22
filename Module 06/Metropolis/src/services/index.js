@@ -78,7 +78,7 @@ async function getUserinfo() {
 function login(postLoginRedirect) {
     // This trips you up: if the user does not successfully authenticate, they never come back to the app!
     localStorage.setItem('postLoginRedirect', postLoginRedirect)
-    window.location.href = `${bffUrl}/acme/login?redirect_uri=${encodeURIComponent(import.meta.env.VITE_APP_BASE_URL)}&app_id=${import.meta.env.VITE_APP_ID}`
+    window.location.href = `${bffUrl}/acme/login?redirect_uri=${encodeURIComponent(import.meta.env.VITE_APP_BASE_URL)}&app_id=${import.meta.env.VITE_APP_ID`
 }
 
 function logout() {

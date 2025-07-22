@@ -164,20 +164,6 @@ module, so add this statement after destructuring auth0Express:
     dotenv.config()
     ```
 
-1. The Auth0 client object will need the URL to the application.
-The following code is already in the *app.js* source file, this is just for your
-reference:
-It checks to see if the application is local or in a GitHub Codespace and builds the
-environment variable BASE_URL accordingly.
-It also allows a manual override in the .env file.
-    ```js
-    if (!process.env.BASE_URL) {
-        process.env.BASE_URL = !process.env.CODESPACE_NAME
-            ? `http://localhost:${process.env.PORT}`
-            : `https://${process.env.CODESPACE_NAME}-${process.env.PORT}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`
-    }
-    ```
-
 1. There is a bunch of setup for *Express* following that code that is outside our scope.
 A redirect is set up if the request landed here with the wrong URL,
 the *Pug* view engine is configured for rendering HTML views with the path to the files, 

@@ -243,6 +243,15 @@
             "runtimeExecutable": "vite",
             "restart": true,
             "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Module 6: Launch Metropolis",
+            "cwd": "${workspaceRoot}/Module 06/Metropolis",
+            "runtimeExecutable": "vite",
+            "restart": true,
+            "console": "internalConsole"
         }
     ],
     "compounds": [
@@ -282,7 +291,8 @@
             "configurations": [
                 "Module 6: Launch Backend API",
                 "Module 6: Launch BFF API",
-                "Module 6: Launch ACME FM"
+                "Module 6: Launch ACME FM",
+                "Module 6: Launch Metropolis"
             ]
         }
     ]
