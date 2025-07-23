@@ -80,7 +80,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 3: Launch Backend API",
-            "cwd": "${workspaceRoot}/Solutions/Module 03/API",
+            "cwd": "${workspaceRoot}/Module 03/API",
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--watch",
@@ -96,7 +96,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 3: Launch BFF API",
-            "cwd": "${workspaceRoot}/Solutions/Module 03/BFF",
+            "cwd": "${workspaceRoot}/Module 03/BFF",
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--watch",
@@ -113,7 +113,7 @@
             "type": "node",
             "request": "launch",
             "name": "Module 3: Launch ACME FM",
-            "cwd": "${workspaceRoot}/Solutions/Module 03/Acme",
+            "cwd": "${workspaceRoot}/Module 03/Acme",
             "runtimeExecutable": "vite",
             "restart": true,
             "console": "internalConsole"

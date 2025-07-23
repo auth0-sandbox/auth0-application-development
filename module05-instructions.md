@@ -164,7 +164,7 @@ API needs to match what is sent exactly.
     Select *Login / Post Login* as the trigger, and pick the recommended version of NodeJS.
     Click the *Create* button to create the action:
 
-    <div style="text-align: center;"><img src="./.assets/images/auth0-app-mapi-enrollments.png" /></div>
+    <div style="text-align: center;"><img src="./.assets/images/auth0-action-create.png" /></div>
 
 1. Other than the comments this defines a callback function that will be executed post-login:
     ```js

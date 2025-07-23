@@ -155,10 +155,8 @@ If you explore this file our focus is on adding authorization; everything else h
 1. Click the run button next to the dropdown and launch the API.
 
 1. Use the *View &rarr; Open View...* menu option to open the *DEBUG CONSOLE*.
-    The successful service start will print *two* URL the service is listening at.
-    The first is the public one to use for verification the service is running.
-    The second is the HTTPS URL that will be used internally by the application.
-    Use ctrl/cmd-click with the *first* link to open the landing page for the API.
+    The successful service start will print the URL the service is listening at.
+    Use ctrl/cmd-click with the link to open the landing page for the API.
 
 1. Verify that a landing page for the API is presented with documentation about its endpoints.
 Click on an endpoint detail to make sure the application returns JSON data.
@@ -274,8 +272,11 @@ and the CLIENT_SECRET and set the corresponding properties in the .env file:
 
 1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*https://acme-fm-backend-api*".
 
-1. Set the BACKEND_URL to the local URL the API will listen on: "https//localhost:38500".
-The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
+1. Set the BACKEND_URL to the local URL the API will listen on: "http://localhost:38500".
+    The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
+    ```
+    BACKEND_URL="http://localhost:38500"
+    ```
 
 1. Save and close the .env file.
 
