@@ -104,38 +104,6 @@ It is possible to type and select multiple users in this field.
 
 ## Part 3: Add Access Token Support to the API
 
-1. Right-click the *certificates* folder at the top-level of the project and select *Open in Integrated Terminal*.
-
-1. Use *mkcert* to create a private/public key pair for the API to serve TLS (https).
-    These keys will be placed in the *certificates* folder under the project to share with modules 3 and 4.
-    The $ is the command prompt:
-    ```bash
-    $ mkcert -cert-file localhost-cert.pem -key-file localhost-cert-key.pem localhost mytestsite.localhost 127.0.0.1 ::1
-    ```
-
-1. In the *Explorer* check the *certificates* folders at the top level of the project to make sure the files were created.
-
-1. In the terminal run the following command to find the path to the PEM file for the private certificate authority:
-    ```bash
-    $ mkcert -CAROOT
-    ...
-    ```
-
-1. In the VS Code Explorer panel find the ".env" file in the top-level directory,
-    at the same level as "Module 01", "Module 03", etc.
-    It will be located after the *Solutions* folder.
-    Right-click on the file and choose the *Open to the Side* option.
-    ```
-    NODE_EXTRA_CA_CERTS=""
-    ```
-
-1. NodeJS must be configured to accept the certificate we are using for HTTPS in the API.
-    Put the path retrieved from mkcert in step before last as the value for this variable, and then append
-    /rootCA.pem to it.
-    ```
-    NODE_EXTRA_CA_CERTS="<path returned by mkcert -CAROOT>/rootCA.pem"
-    ```
-
 1. Close the .env file to keep it from being confused with the .env file opened in the next step.    
 
 1. In the VS Code Explorer panel find the "Module 02/API" folder and right-click on *.env*.
@@ -160,12 +128,6 @@ API needs to match what is sent exactly.
 1. Set the *AUDIENCE* to the audience we defined in Auth0 for the API:
     ```
     AUDIENCE="https://acme-fm-backend-api"
-    ```
-
-1. Set these environment variables and values as shown in .env to locate the private key and HTTPS certificate files:
-    ```
-    PRIVATE_KEY_PATH="../../certificates/localhost-cert-key.pem"
-    CERTIFICATE_PATH="../../certificates/localhost-cert.pem"
     ```
 
 1. Save the .env file.
@@ -293,15 +255,26 @@ Alternatively you could use the current terminal window and issue a *cd ../Acme*
     $ npm install
     ```
 
-1. In VS Code click on the open *server.js* file to set to focus to the right pane in the editor,
-and then in the Explorer panel double-click the *Module 02/Acme/.env file to open it.
+1. In VS Code click on the open *server.js* file to set to focus to the right pane in the editor.
+Double-click the *Module 02/Acme/.env file in the Explorer panel to open it.
 
-1. Set the *CLIENT_ID, CLIENT_SECRET,* and *ISSUER_BASE_URL* as we did in Module 01.
-Hint: go find the .env file from Module01 and copy the three values.
+1. Set the ISSUER_BASE_URL property to *https://* plus the value of the application
+DOMAIN from the Auth0 tenant.
+It will look something like this, but with a different domain name:
+    ```
+    ISSUER_BASE_URL="https://dev-lab-jmussman-20250506.us.auth0.com"
+    ```
+
+1. Copy the values from the application configuration at Auth0 for the CLIENT_ID
+and the CLIENT_SECRET and set the corresponding properties in the .env file:
+    ```
+    CLIENT_ID="..."
+    CLIENT_SECRET="..."
+    ```
 
 1. Set the BACKEND_AUDIENCE to the audience we defined for the API: "*https://acme-fm-backend-api*".
 
-1. Set the BACKEND_URL to the local URL the API will listen on: "https://localhost:38443".
+1. Set the BACKEND_URL to the local URL the API will listen on: "https//localhost:38500".
 The application is a web application, so the local URL from the application to the API is on the same computer: localhost.
 
 1. Save and close the .env file.
@@ -311,7 +284,7 @@ Hint: if it opens in the left editor panel instead of the right panel, click the
 
 1. Locate the configuration for the Auth0 client that is registered as the Express middleware: *app.use(auth({...*
 
-1. Add the following audience line to the existing *authorizationParams* section.
+1. Add the following *audience* line to the existing *authorizationParams* section.
 This configures the application to request a grant for an access token that matches the backend API we configured:
 
     <pre><code language="js"><span style="color: #aaaaaa;">authorizationParams: {</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red">audience</span>: process.env.BACKEND_AUDIENCE,</code></pre>

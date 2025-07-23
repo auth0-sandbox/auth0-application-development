@@ -8,8 +8,6 @@
 
 * The Auth0 ACME Financial Management client configuration from Module 01
 * The Auth0 ACME FM Backend API configuration from Module 02
-* *certificates/localhost-cert-key.pem* and *certificates/localhost-cert.pem* created in Module 02
-* The certificate authority file path in the .env file at the top of the project, created in Module 02
 * The *user_metadata.optin_mfa* profile attribute established in Module 04; the lab is not needed but the lab depends on the property in the user profile
 * If you relaunch this lab in a new GitHub Codespace update the callback URLs in the Auth0 client configuration.
 
@@ -69,7 +67,20 @@ The Acme VUE application has already been modified to show the link to clear enr
 
 1. Right-click the "Module 05/API/.env" file and open it to the side.
 
-1. Set the missing environment variables with the values from the Auth0 tenant (hint: go back to the corresponding file in Module 04).
+1. In the Auth0 tenant use the sidebar to navigate to *Applications &rarr; Applications* and
+choose the *ACME Financial Management* application.
+
+1. At the bottom of the settings page, expand *Advanced Settings*, and click on the *Endpoints* tab.
+
+1. Locate the entry for *JSON Web Key Set* and copy the value.
+
+1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
+
+1. Set the *ISSUER* to the URL of your Auth0 tenant: *https://\<your domain>.\<your region>.auth0.com/*.
+That happens to be the first part of the JWKS_URI value, up to and including
+the / in front of the path part of the URL, so you can get it from there.
+Make sure the trailing slash is present, because the access token *iss* claim will have it and the
+API needs to match what is sent exactly.
 
 1. Save and close the .env file.
 

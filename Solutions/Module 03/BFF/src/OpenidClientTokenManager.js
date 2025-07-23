@@ -25,7 +25,7 @@ class TokenManager {
     getAuthenticationUrl(callbackUrl, audience, requiredScopes) {
         const url = client.buildAuthorizationUrl(this.issuerConfig,
             {
-                redirect_uri: callbackUrl,
+                redirect_uri: new URL(callbackUrl),
                 scope: `openid profile email offline_access ${requiredScopes}`,
                 audience: audience,
                 response_type: 'code'
@@ -88,8 +88,17 @@ class TokenManager {
         if (!session || !session.idToken || !session.accessToken || !session.refreshToken) {
             throw 401
         }
-        const fullHeaders = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json', ...headers })
-        return await client.fetchProtectedResource(this.issuerConfig, await this.getAccessToken(session), new URL(url), method, body, fullHeaders)
+        const options = {
+            method: method || 'GET',
+            body: body ? JSON.stringify(body) : null,
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${await this.getAccessToken(session)}`,
+                ...headers
+            })
+        }
+        return await fetch(url, options)
     }
 }
 

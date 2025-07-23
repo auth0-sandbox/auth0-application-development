@@ -69,7 +69,9 @@ and click on the *Grants* tab:
 1. Clear the checkboxes except for *Authorization Code* and *Refresh Token*.
 At the bottom of the page click the *Save* button.
 
-1. Back in the VS Code editor click on the tab opened earlier for the file *app.js*.
+## Part 3: Setting the externalized application configuration
+
+1. In the VS Code editor click on the tab opened earlier for the file *app.js*.
 New files open in the same editor pane as the file with the focus.
 
 1. In the Explorer panel (open it temporarily if you have to) click the *Module 01/Acme/.env* file to open it next to *app.js*.
@@ -111,7 +113,7 @@ Note, we are not quite done yet because we need to configure the *callback* and
 *logout* URLs on the Auth0 side.
 But, if you are running in a GitHub Codespace we do not know the URL and port number yet!
 
-## Part 3: Integrating Authentication into the Express Application
+## Part 4: Integrating Authentication into the Express Application
 
 1. This application is based on the *Express* framework.
 Express is a JavaScript framework for web applications and services that
@@ -246,7 +248,7 @@ The embedded web server is started by calling the *listen* method.
 The data for expenses is at the end of the file; this is just sample data
 for testing the application.
 
-## Part 4: Testing the Express Application
+## Part 5: Testing the Express Application
 
 1. Open the *Run/Debug* panel from the toolbar 
 ![Run/Debug](./.assets/images/vscode-toolbar-rundebug.png)

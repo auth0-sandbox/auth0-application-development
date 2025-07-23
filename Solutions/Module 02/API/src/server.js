@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 // This middleware requires authorization for any middleware registered after it.
 app.use(auth({
     audience: process.env.AUDIENCE,
-    issuer: process.env.ISSUER,
+    issuer: process.env.ISSUER_BASE_URL,
     jwksUri: process.env.JWKS_URI,
     tokenSigningAlg: process.env.TOKEN_SIGNING_ALG || 'RS256'
 }))
@@ -63,14 +63,6 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(process.env.PORT, () => console.log(`Backend API started, use ctrl/cmd-click to follow this link: ${process.env.BASE_URL}`))
-
-const expressOptions = {
-    key: fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8'),
-    cert: fs.readFileSync(process.env.CERTIFICATE_PATH, 'utf8')
-}
-
-https.createServer(expressOptions, app)
-    .listen(process.env.PORT_TLS, () => console.log(`Backend API started with TLS at: https://localhost:${process.env.PORT_TLS}`))
 
 const expenses = [
     {

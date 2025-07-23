@@ -15,6 +15,8 @@ import TokenManager from './OpenidClientTokenManager.js'
 console.log(process.cwd())
 
 dotenv.config()
+process.env.ISSUER_BASE_URL = `https://${process.env.DOMAIN}`
+
 const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER_BASE_URL, process.env.CLIENT_ID, process.env.CLIENT_SECRET)
 
 if (!process.env.BASE_URL) {

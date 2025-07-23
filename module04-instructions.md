@@ -1,4 +1,4 @@
-![Lab Banner](./.assets/images/application-development-banner.png)
+x![Lab Banner](./.assets/images/application-development-banner.png)
 
 # Lab 4: Management API
 
@@ -61,8 +61,20 @@ This page and required functionality has already been added to the Acme front-en
 
 1. Right-click the "Module 04/API/.env" file and open to the right.
 
-1. Set the *ISSUER* and *JKWS_URI* variables as they were set in the
-    "Module 03/API/.env" file.
+1. In the Auth0 tenant use the sidebar to navigate to *Applications &rarr; Applications* and
+choose the *ACME Financial Management* application.
+
+1. At the bottom of the settings page, expand *Advanced Settings*, and click on the *Endpoints* tab.
+
+1. Locate the entry for *JSON Web Key Set* and copy the value.
+
+1. In VS Code, in the .env file in the editor, set the *JWKS_URI* to the value copied from the tenant.
+
+1. Set the *ISSUER* to the URL of your Auth0 tenant: *https://\<your domain>.\<your region>.auth0.com/*.
+That happens to be the first part of the JWKS_URI value, up to and including
+the / in front of the path part of the URL, so you can get it from there.
+Make sure the trailing slash is present, because the access token *iss* claim will have it and the
+API needs to match what is sent exactly.
 
 1. Save and close the .env file.
 
@@ -77,8 +89,8 @@ This page and required functionality has already been added to the Acme front-en
 
 1. Right-click the "Module 04/BFF/.env" file and open to the right.
 
-1. Set the *CLIENT_ID*, *DOMAIN*, and *ISSUER* variable as they were set
-    in the "Module 03/BFF.env" file.
+1. Set the *CLIENT_ID*, *CLIENT_SECRET*, and *DOMAIN* variables from the Auth0 tenant
+    *ACME Financial Management* application.
 
 1. Save and close the .env file.
 

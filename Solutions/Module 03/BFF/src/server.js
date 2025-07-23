@@ -12,11 +12,10 @@ import path, { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
 import TokenManager from './OpenidClientTokenManager.js'
 
-console.log(process.cwd())
-
 dotenv.config()
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'utf8')
-const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER_BASE_URL, process.env.CLIENT_ID, privateKey)
+process.env.ISSUER_BASE_URL = `https://${process.env.DOMAIN}`
+
+const tokenManager = await TokenManager.getTokenManager(process.env.ISSUER_BASE_URL, process.env.CLIENT_ID, process.env.CLIENT_SECRET)
 
 if (!process.env.BASE_URL) {
     process.env.BASE_URL = !process.env.CODESPACE_NAME
@@ -117,7 +116,7 @@ app.get('/acme/logout', async (req, res) => {
     if (redirectUri) {
         req.session.post_logout_redirect_uri = req.query.post_logout_redirect_uri
     } else {
-        redirectUri = post_logout_redirect_uri
+        redirectUri = req.query.post_logout_redirect_uri
     }
     res.redirect(redirectUri)
 })

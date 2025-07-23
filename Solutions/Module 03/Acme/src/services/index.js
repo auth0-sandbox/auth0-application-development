@@ -65,4 +65,4 @@ function setUser(userProperties) {
     user.picture = userProperties.picture
 }
 
-export { getProfile, getPostLoginRedirect, getReports, getTotals, getUserinfo, login, logout, resetProfileMfa, setProfileOptInMfa, setUser, user }
+export { getPostLoginRedirect, getReports, getTotals, getUserinfo, login, logout, setUser, user }
